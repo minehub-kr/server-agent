@@ -25,10 +25,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK ${{ matrix.python-version }}
+      - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.python-version }}
+          java-version: ${{ matrix.java-version }}
       - name: Setup Spigot Build Environment
         run: |
           mkdir BuildTools
@@ -36,5 +36,5 @@ jobs:
           wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
           java -jar BuildTools.jar --rev latest
           cd ..
-      - name: Build with Maven
-        run: mvn
+      - name: Run Test with Maven
+        run: mvn test
