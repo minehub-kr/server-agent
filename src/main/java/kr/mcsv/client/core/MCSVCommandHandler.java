@@ -46,6 +46,7 @@ public class MCSVCommandHandler {
                     return generateLoginLink(sender);
                 } else if (args.length == 2) {
                     String authorizationCode = args[1];
+                    sender.sendMessage("Test: "+authorizationCode);
                 } else {
                     sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 인수입니다.");
                 }
