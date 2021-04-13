@@ -105,6 +105,11 @@ public class MCSVCommandHandler {
                     Main.clientScope.split(" ")
             );
 
+            if (url == null) {
+                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"생성 중 오류 발생!");
+                return true;
+            }
+
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 로그인"
             );

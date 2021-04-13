@@ -57,27 +57,36 @@ public class MeilingUtils {
     public static String createQueryString(Map<String, String> params) {
         return createQueryString("", params);
     }
+    public static String createQueryString(String prevParams, Map<String, String> params) {
+        return createQueryString("", params, false);
+    }
 
-    public static String createQueryString(String prevParams, Map<String, String> params){
+    public static String createQueryString(String prevParams, Map<String, String> params, boolean doNotEncode) {
+        prevParams = prevParams == null ? "" : prevParams;
+
         StringBuilder result = new StringBuilder(prevParams);
+
         boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
-            try {
-                String name = URLEncoder.encode(entry.getKey(), "UTF-8");
-                String value = URLEncoder.encode(entry.getValue(), "UTF-8");
+        if (params != null) {
+            for(Map.Entry<String, String> entry : params.entrySet()){
+                try {
+                    String name = doNotEncode ? entry.getKey() : URLEncoder.encode(entry.getKey(), "UTF-8");
+                    String value = doNotEncode ? entry.getValue() : URLEncoder.encode(entry.getValue(), "UTF-8");
 
-                if (first)
-                    first = false;
-                else
-                    result.append("&");
+                    if (first)
+                        first = false;
+                    else
+                        result.append("&");
 
-                result.append(name);
-                result.append("=");
-                result.append(value);
-            } catch (UnsupportedEncodingException e) {
+                    result.append(name);
+                    result.append("=");
+                    result.append(value);
+                } catch (UnsupportedEncodingException e) {
 
+                }
             }
         }
+
         return result.toString();
     }
 }

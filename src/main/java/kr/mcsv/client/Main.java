@@ -52,7 +52,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         logger.info("mcsv.kr client is shutting down...");
-        saveAuthorization();
     }
 
     private void migrateConfig(FileConfiguration config) throws IOException {
@@ -94,11 +93,19 @@ public final class Main extends JavaPlugin {
     }
 
     private void saveAuthorization() {
-        try {
-            config.set("credentials.accessToken", authorization.getAccessToken());
-            config.set("credentials.refreshToken", authorization.getRefreshToken());
-        } catch (InvalidRefreshTokenException e) {
-            authorization = null;
+        if (authorization != null) {
+            config.set("credentials.accessToken", null);
+            config.set("credentials.refreshToken", null);
+        } else {
+            try {
+                config.set("credentials.accessToken", authorization.getAccessToken());
+                config.set("credentials.refreshToken", authorization.getRefreshToken());
+            } catch (InvalidRefreshTokenException e) {
+                authorization = null;
+                config.set("credentials.accessToken", null);
+                config.set("credentials.refreshToken", null);
+
+            }
         }
     }
 
