@@ -3,25 +3,36 @@ package kr.mcsv.client;
 import com.stella_it.meiling.InvalidRefreshTokenException;
 import com.stella_it.meiling.MeilingAuthorization;
 import com.stella_it.meiling.MeilingClient;
+import kr.mcsv.client.core.MCSVCommandHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
+    public static String clientScope = "openid profile email https://api.mcsv.kr";
+
     public static String mcsvClientId = "33ead755-dd70-4d3f-b29a-3a11d5956e41";
     public static MeilingClient client = new MeilingClient(mcsvClientId);
     public static MeilingAuthorization authorization = null;
 
+    public static String version = "";
+
     public static FileConfiguration config;
+
 
     Logger logger;
 
     @Override
     public void onEnable() {
+        version = this.getDescription().getVersion();
+
         // Plugin startup logic
         logger = Bukkit.getLogger();
         logger.info("mcsv.kr client is starting up...");
@@ -82,7 +93,6 @@ public final class Main extends JavaPlugin {
         }
     }
 
-
     private void saveAuthorization() {
         try {
             config.set("credentials.accessToken", authorization.getAccessToken());
@@ -90,5 +100,16 @@ public final class Main extends JavaPlugin {
         } catch (InvalidRefreshTokenException e) {
             authorization = null;
         }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        return MCSVCommandHandler.onTabComplete(sender, command, label, args);
+
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return MCSVCommandHandler.onCommand(sender, command, label, args);
     }
 }
