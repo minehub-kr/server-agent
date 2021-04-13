@@ -60,9 +60,17 @@ public final class Main extends JavaPlugin {
         this.saveConfig();
     }
 
+    public boolean isAuthorized() {
+        return authorization != null;
+    }
+
     private MeilingAuthorization loadAuthorization() {
         String accessToken = config.getString("credentials.accessToken", null);
         String refreshToken = config.getString("credentials.refreshToken", null);
+
+        if (accessToken == null || refreshToken == null) {
+            return null;
+        }
 
         try {
             MeilingAuthorization authorization = new MeilingAuthorization(client, accessToken, refreshToken);
@@ -73,6 +81,7 @@ public final class Main extends JavaPlugin {
             return null;
         }
     }
+
 
     private void saveAuthorization() {
         try {
