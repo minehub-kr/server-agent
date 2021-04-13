@@ -46,6 +46,7 @@ public class MeilingAuthorization {
 
         try {
             JSONObject data = response.toJson();
+
             return data;
         } catch (ParseException e) {
             return null;
@@ -85,6 +86,26 @@ public class MeilingAuthorization {
 
     public boolean isRefreshTokenValid() throws IOException {
         return isRefreshTokenSafe(0);
+    }
+
+    public String getAccessToken() throws InvalidRefreshTokenException {
+        try {
+            this.renewTokens();
+        } catch (IOException e) {
+
+        } catch (InvalidRefreshTokenException e) {
+            throw e;
+        }
+
+        return this.accessToken;
+    }
+
+    public String getRefreshToken() {
+        return this.refreshToken;
+    }
+
+    public boolean renewTokens() throws IOException, InvalidRefreshTokenException {
+        return this.renewTokens(false);
     }
 
     public boolean renewTokens(boolean force) throws IOException, InvalidRefreshTokenException {
@@ -134,9 +155,5 @@ public class MeilingAuthorization {
             // you screwed up.
             throw new InvalidRefreshTokenException("Refresh tokens are invalid. Requires new authorization.");
         }
-    }
-
-    public void getAccessToken() {
-
     }
 }

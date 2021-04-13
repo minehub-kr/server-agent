@@ -48,7 +48,7 @@ public class MeilingUtils {
 
         for (int i = 0; i < length; i++) {
             int idx = generateRandom(availableChars.length());
-            builder.append(availableChars.indexOf(availableChars));
+            builder.append(availableChars.indexOf(idx));
         }
 
         return builder.toString();
