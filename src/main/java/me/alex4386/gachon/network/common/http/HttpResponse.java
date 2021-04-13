@@ -1,5 +1,9 @@
 package me.alex4386.gachon.network.common.http;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,5 +48,12 @@ public class HttpResponse {
     @Override
     public String toString() {
         return this.response;
+    }
+
+    public JSONObject toJson() throws ParseException {
+        JSONParser jsonParser = new JSONParser();
+        JSONObject object = (JSONObject) jsonParser.parse(this.toString());
+
+        return object;
     }
 }

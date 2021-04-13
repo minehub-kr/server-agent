@@ -6,5 +6,11 @@
 This plugin is for integrating your server to MCSV.KR Platform.  
 To be declared...
 
+## Target System
+Due to legacy compatibility, MCSV.KR Client targets Java 8 by default.  
+But in the near future, MCSV.KR Client will target Java 11.  
+
+Currently, MCSV.KR Client works best on Java 8 with Minecraft version 1.16.5.  
+
 ## License
 Distributed under [MIT License](LICENSE)
