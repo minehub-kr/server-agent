@@ -1,7 +1,9 @@
-name: Client
+name: MCSV.KR Client
 version: ${project.version}
 main: kr.mcsv.client.Main
 api-version: 1.16
 prefix: MCSV.KR
 description: MCSV.KR Client
 website: https://mcsv.kr
+commands:
+  - mcsv
