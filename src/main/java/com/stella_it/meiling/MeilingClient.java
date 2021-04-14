@@ -66,7 +66,7 @@ public class MeilingClient {
         Map<String, String> queries = new HashMap<>();
 
         queries.put("client_id", this.clientId);
-        queries.put("response_type", method.getMethod());
+        queries.put("response_type", method.getOAuth2TokenRequestCode());
         queries.put("redirect_uri", redirectUri);
         queries.put("scope", String.join(" ", scopes));
 
@@ -109,6 +109,12 @@ public class MeilingClient {
                 );
 
                 HttpResponse response = httpRequest.getResponse();
+
+                if (!response.code.isOK()) {
+                    System.out.println(response.toString());
+                    return null;
+                }
+
                 JSONObject obj = response.toJson();
 
                 String accessToken = (String) obj.get("access_token");
@@ -116,6 +122,7 @@ public class MeilingClient {
 
                 return new MeilingAuthorization(this, accessToken, refreshToken);
             } catch(IOException | ParseException e) {
+                e.printStackTrace();
                 return null;
             }
 

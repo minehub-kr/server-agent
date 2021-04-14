@@ -1,5 +1,6 @@
 package kr.mcsv.client.core;
 
+import com.stella_it.meiling.MeilingAuthorization;
 import com.stella_it.meiling.MeilingAuthorizationMethod;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.utils.MCSVUtils;
@@ -46,7 +47,7 @@ public class MCSVCommandHandler {
                     return generateLoginLink(sender);
                 } else if (args.length == 2) {
                     String authorizationCode = args[1];
-                    sender.sendMessage("Test: "+authorizationCode);
+                    return authorizeUsingAuthcode(sender, authorizationCode);
                 } else {
                     sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 인수입니다.");
                 }
@@ -122,6 +123,38 @@ public class MCSVCommandHandler {
                     "" + ChatColor.AQUA + ChatColor.UNDERLINE + url.toString()
             );
 
+            sender.sendMessage("");
+            sender.sendMessage("로그인을 진행 한 후, 코드를 복사해 명령어(/mcsv login 코드)를 실행 해 주세요.");
+
+        } else {
+            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
+        }
+
+        return true;
+    }
+
+    public static boolean authorizeUsingAuthcode(CommandSender sender, String code) {
+        if (sender.hasPermission("mcsv.login")) {
+            sender.sendMessage(
+                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증서버와 통신을 시작합니다"
+            );
+
+            MeilingAuthorization authorization = Main.client.getAuthorization(
+                    MeilingAuthorizationMethod.AUTHORIZATION_CODE,
+                    code
+            );
+            if (authorization == null) {
+                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 코드이거나, 만료된 코드입니다. 처음부터 인증을 다시 시작하세요.");
+                return true;
+            }
+
+            sender.sendMessage(
+                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증에 성공했습니다."
+            );
+            Main.authorization = authorization;
+            Main.saveAuthorization();
+
+            return true;
         } else {
             sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
         }

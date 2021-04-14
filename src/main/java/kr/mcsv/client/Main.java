@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
+    protected static JavaPlugin plugin;
     public static String clientScope = "openid profile email https://api.mcsv.kr";
 
     public static String mcsvClientId = "33ead755-dd70-4d3f-b29a-3a11d5956e41";
@@ -26,12 +27,14 @@ public final class Main extends JavaPlugin {
 
     public static FileConfiguration config;
 
-
-    Logger logger;
+    public static Logger logger;
 
     @Override
     public void onEnable() {
+        plugin = this;
         version = this.getDescription().getVersion();
+
+        System.setProperty("http.agent", "mcsv/"+version);
 
         // Plugin startup logic
         logger = Bukkit.getLogger();
@@ -92,8 +95,8 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    private void saveAuthorization() {
-        if (authorization != null) {
+    public static void saveAuthorization() {
+        if (authorization == null) {
             config.set("credentials.accessToken", null);
             config.set("credentials.refreshToken", null);
         } else {
@@ -101,10 +104,22 @@ public final class Main extends JavaPlugin {
                 config.set("credentials.accessToken", authorization.getAccessToken());
                 config.set("credentials.refreshToken", authorization.getRefreshToken());
             } catch (InvalidRefreshTokenException e) {
+                logger.severe("[MCSV] Invalid Refresh Token!");
                 authorization = null;
                 config.set("credentials.accessToken", null);
                 config.set("credentials.refreshToken", null);
+            }
+        }
 
+        if (plugin != null) {
+            try {
+                config.save(
+                        plugin.getDataFolder() +
+                                File.separator +
+                                "config.yml"
+                );
+            } catch(IOException e) {
+                logger.severe("[MCSV] Failed to Save (IO)!");
             }
         }
     }

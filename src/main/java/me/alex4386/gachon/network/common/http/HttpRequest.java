@@ -1,5 +1,6 @@
 package me.alex4386.gachon.network.common.http;
 
+import kr.mcsv.client.Main;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class HttpRequest {
     public HttpRequest(HttpRequestMethod method, URL url, JSONObject jsonObject) {
         this.method = method;
         this.url = url;
+
         this.body = jsonObject.toJSONString();
 
         headers.put("Content-Type", "application/json;charset=utf-8");
@@ -36,6 +38,7 @@ public class HttpRequest {
     public HttpRequest(HttpRequestMethod method, URL url, String contentType, String body) {
         this.method = method;
         this.url = url;
+
         this.body = body;
 
         headers.put("Content-Type", contentType);
@@ -65,7 +68,11 @@ public class HttpRequest {
             conn.setRequestProperty(headerEntry.getKey(), headerEntry.getValue());
         }
 
+        System.out.println(this.method.toString()+" "+this.url.toString());
         if (body != null) {
+            System.out.println(body);
+            conn.setDoOutput(true);
+
             OutputStream outputStream = conn.getOutputStream();
             OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
 
