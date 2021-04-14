@@ -1,5 +1,6 @@
 package kr.mcsv.client.core;
 
+import com.stella_it.meiling.InvalidRefreshTokenException;
 import com.stella_it.meiling.MeilingAuthorization;
 import com.stella_it.meiling.MeilingAuthorizationMethod;
 import kr.mcsv.client.Main;
@@ -53,6 +54,8 @@ public class MCSVCommandHandler {
                 }
             } else if (subCommand.equals("setup")) {
 
+            } else if (subCommand.equals("token")) {
+                return showToken(sender);
             }
             return true;
         }
@@ -82,6 +85,16 @@ public class MCSVCommandHandler {
                                 ChatColor.GRAY + "setup " +
                                 ChatColor.DARK_GRAY + ": " +
                                 ChatColor.RESET + "MCSV.KR 플랫폼에 이 서버를 등록합니다."
+                );
+            }
+
+            if (sender.hasPermission("mcsv.token")) {
+                sender.sendMessage(
+                        ChatColor.GREEN + "* " +
+                                ChatColor.BOLD + "/mcsv " +
+                                ChatColor.GRAY + "token " +
+                                ChatColor.DARK_GRAY + ": " +
+                                ChatColor.RESET + "MCSV.KR 플랫폼에 로그인 하기 위한 토큰을 조회합니다."
                 );
             }
 
@@ -132,6 +145,35 @@ public class MCSVCommandHandler {
 
         return true;
     }
+
+
+    public static boolean showToken(CommandSender sender) {
+        if (sender.hasPermission("mcsv.token")) {
+            if (Main.authorization == null) {
+                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"로그인 되어있지 않습니다!");
+                return true;
+            }
+
+            sender.sendMessage(
+                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 토큰 조회"
+            );
+
+            try {
+                sender.sendMessage("Access Token: "+Main.authorization.getAccessToken());
+                sender.sendMessage("Refresh Token: "+Main.authorization.getRefreshToken());
+            } catch (InvalidRefreshTokenException e) {
+                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"토큰 갱신에 실패했습니다!");
+                return true;
+            }
+            sender.sendMessage(ChatColor.GOLD+"[경고] "+ChatColor.RESET+"이 토큰을 절대 제3자에게 노출해서는 절대 안 됩니다!");
+
+        } else {
+            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
+        }
+
+        return true;
+    }
+
 
     public static boolean authorizeUsingAuthcode(CommandSender sender, String code) {
         if (sender.hasPermission("mcsv.login")) {
