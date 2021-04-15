@@ -68,6 +68,26 @@ public class MCSVCommandHandler {
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 버전: " + Main.version
             );
 
+            if (sender.hasPermission("mcsv.checkLogin")) {
+                String header = ChatColor.RESET + "로그인 상태: ";
+
+                if (Main.core.isAuthorized()) {
+                    sender.sendMessage(header+ChatColor.GREEN+"로그인 완료");
+                } else {
+                    sender.sendMessage(header+ChatColor.RED+"로그인 되지 않음");
+                }
+            }
+
+            if (sender.hasPermission("mcsv.checkRegistered")) {
+                String header = ChatColor.RESET + "등록 상태: ";
+
+                if (Main.core.isAuthorized()) {
+                    sender.sendMessage(header+ChatColor.GREEN+"등록 완료");
+                } else {
+                    sender.sendMessage(header+ChatColor.RED+"미등록");
+                }
+            }
+
             if (sender.hasPermission("mcsv.login")) {
                 sender.sendMessage(
                         ChatColor.GREEN + "* " +
@@ -114,11 +134,7 @@ public class MCSVCommandHandler {
 
     public static boolean generateLoginLink(CommandSender sender) {
         if (sender.hasPermission("mcsv.login")) {
-            URL url = Main.client.createAuthorizationRequest(
-                    MeilingAuthorizationMethod.AUTHORIZATION_CODE,
-                    Main.clientScope.split(" ")
-            );
-
+            URL url = Main.core.createAuthorizationRequest();
             if (url == null) {
                 sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"생성 중 오류 발생!");
                 return true;
@@ -149,7 +165,7 @@ public class MCSVCommandHandler {
 
     public static boolean showToken(CommandSender sender) {
         if (sender.hasPermission("mcsv.token")) {
-            if (Main.authorization == null) {
+            if (!Main.core.isAuthorized()) {
                 sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"로그인 되어있지 않습니다!");
                 return true;
             }
@@ -159,8 +175,8 @@ public class MCSVCommandHandler {
             );
 
             try {
-                sender.sendMessage("Access Token: "+Main.authorization.getAccessToken());
-                sender.sendMessage("Refresh Token: "+Main.authorization.getRefreshToken());
+                sender.sendMessage("Access Token: "+Main.core.getAccessToken());
+                sender.sendMessage("Refresh Token: "+Main.core.getRefreshToken());
             } catch (InvalidRefreshTokenException e) {
                 sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"토큰 갱신에 실패했습니다!");
                 return true;
@@ -181,11 +197,9 @@ public class MCSVCommandHandler {
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증서버와 통신을 시작합니다"
             );
 
-            MeilingAuthorization authorization = Main.client.getAuthorization(
-                    MeilingAuthorizationMethod.AUTHORIZATION_CODE,
-                    code
-            );
-            if (authorization == null) {
+            boolean authSuccess = Main.core.authorizeUsingAuthCode(code);
+
+            if (!authSuccess) {
                 sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 코드이거나, 만료된 코드입니다. 처음부터 인증을 다시 시작하세요.");
                 return true;
             }
@@ -193,8 +207,6 @@ public class MCSVCommandHandler {
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증에 성공했습니다."
             );
-            Main.authorization = authorization;
-            Main.saveAuthorization();
 
             return true;
         } else {

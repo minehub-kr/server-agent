@@ -1,9 +1,8 @@
 package kr.mcsv.client;
 
-import com.stella_it.meiling.InvalidRefreshTokenException;
-import com.stella_it.meiling.MeilingAuthorization;
-import com.stella_it.meiling.MeilingClient;
 import kr.mcsv.client.core.MCSVCommandHandler;
+import kr.mcsv.client.core.MCSVCore;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,16 +16,11 @@ import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
     protected static JavaPlugin plugin;
-    public static String clientScope = "openid profile email https://api.mcsv.kr";
-
-    public static String mcsvClientId = "33ead755-dd70-4d3f-b29a-3a11d5956e41";
-    public static MeilingClient client = new MeilingClient(mcsvClientId);
-    public static MeilingAuthorization authorization = null;
 
     public static String version = "";
-
     public static FileConfiguration config;
 
+    public static MCSVCore core;
     public static Logger logger;
 
     @Override
@@ -49,7 +43,11 @@ public final class Main extends JavaPlugin {
             logger.severe("mcsv.kr have failed to migrate your config.");
         }
 
-        authorization = loadAuthorization();
+        File credentialsFile = new File(this.getDataFolder(), "credentials.yml");
+
+        core = new MCSVCore();
+        core.setCredentialsFile(credentialsFile);
+        core.loadCredentialsFile();
     }
 
     @Override
@@ -71,57 +69,6 @@ public final class Main extends JavaPlugin {
         }
 
         this.saveConfig();
-    }
-
-    public boolean isAuthorized() {
-        return authorization != null;
-    }
-
-    private MeilingAuthorization loadAuthorization() {
-        String accessToken = config.getString("credentials.accessToken", null);
-        String refreshToken = config.getString("credentials.refreshToken", null);
-
-        if (accessToken == null || refreshToken == null) {
-            return null;
-        }
-
-        try {
-            MeilingAuthorization authorization = new MeilingAuthorization(client, accessToken, refreshToken);
-            authorization.getAccessToken();
-
-            return authorization;
-        } catch (InvalidRefreshTokenException e) {
-            return null;
-        }
-    }
-
-    public static void saveAuthorization() {
-        if (authorization == null) {
-            config.set("credentials.accessToken", null);
-            config.set("credentials.refreshToken", null);
-        } else {
-            try {
-                config.set("credentials.accessToken", authorization.getAccessToken());
-                config.set("credentials.refreshToken", authorization.getRefreshToken());
-            } catch (InvalidRefreshTokenException e) {
-                logger.severe("[MCSV] Invalid Refresh Token!");
-                authorization = null;
-                config.set("credentials.accessToken", null);
-                config.set("credentials.refreshToken", null);
-            }
-        }
-
-        if (plugin != null) {
-            try {
-                config.save(
-                        plugin.getDataFolder() +
-                                File.separator +
-                                "config.yml"
-                );
-            } catch(IOException e) {
-                logger.severe("[MCSV] Failed to Save (IO)!");
-            }
-        }
     }
 
     @Override
