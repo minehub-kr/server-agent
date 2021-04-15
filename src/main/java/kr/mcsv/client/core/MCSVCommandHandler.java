@@ -122,7 +122,7 @@ public class MCSVCommandHandler {
                     "Copyright © "+
                             ChatColor.GREEN+"mcsv.kr platform "+
                             ChatColor.RESET+"and "+
-                            ChatColor.AQUA+"Stella "+ChatColor.LIGHT_PURPLE+"IT"
+                            ChatColor.DARK_AQUA+"Ste"+ChatColor.BLUE+"lla"+ChatColor.DARK_PURPLE+" IT"
             );
         } else {
             sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");

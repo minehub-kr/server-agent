@@ -74,7 +74,6 @@ public final class Main extends JavaPlugin {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         return MCSVCommandHandler.onTabComplete(sender, command, label, args);
-
     }
 
     @Override
