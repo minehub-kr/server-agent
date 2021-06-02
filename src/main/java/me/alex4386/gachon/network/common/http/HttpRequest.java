@@ -18,8 +18,9 @@ public class HttpRequest {
     URL url;
 
     String body = null;
-
     Map<String, String> headers = new HashMap<>();
+
+    boolean enableDebug = false;
 
     public HttpRequest(HttpRequestMethod method, URL url) {
         this.method = method;
@@ -60,6 +61,14 @@ public class HttpRequest {
         this.headers = headers;
     }
 
+    public boolean isDebug() {
+        return this.enableDebug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.enableDebug = debug;
+    }
+
     public HttpResponse getResponse() throws IOException {
         HttpURLConnection conn = (HttpURLConnection) this.url.openConnection();
         conn.setRequestMethod(this.method.toString());
@@ -68,9 +77,15 @@ public class HttpRequest {
             conn.setRequestProperty(headerEntry.getKey(), headerEntry.getValue());
         }
 
-        System.out.println(this.method.toString()+" "+this.url.toString());
+        if (this.enableDebug) {
+            System.out.println(this.method.toString()+" "+this.url.toString());
+        }
+
         if (body != null) {
-            System.out.println(body);
+            if (this.enableDebug) {
+                System.out.println(body);
+            }
+
             conn.setDoOutput(true);
 
             OutputStream outputStream = conn.getOutputStream();
@@ -84,7 +99,9 @@ public class HttpRequest {
 
         conn.connect();
 
-        return new HttpResponse(conn);
+        HttpResponse response = new HttpResponse(conn);
+
+        return response;
     }
 }
 

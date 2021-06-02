@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MCSVCommandHandler {
+public class MCSVCommand {
     public static List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> result = new ArrayList<>();
         String commandName = label.toLowerCase();
@@ -53,7 +53,12 @@ public class MCSVCommandHandler {
                     sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 인수입니다.");
                 }
             } else if (subCommand.equals("setup")) {
+                boolean isForced = false;
+                if (args.length > 2) {
+                    isForced = args[1].toLowerCase().equals("confirm");
+                }
 
+                return startSetup(sender, isForced);
             } else if (subCommand.equals("token")) {
                 return showToken(sender);
             }
@@ -62,7 +67,7 @@ public class MCSVCommandHandler {
         return false;
     }
 
-    public static boolean sendMCSVInfo(CommandSender sender) {
+    private static boolean sendMCSVInfo(CommandSender sender) {
         if (sender.hasPermission("mcsv.info")) {
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 버전: " + Main.version
@@ -81,7 +86,7 @@ public class MCSVCommandHandler {
             if (sender.hasPermission("mcsv.checkRegistered")) {
                 String header = ChatColor.RESET + "등록 상태: ";
 
-                if (Main.core.isAuthorized()) {
+                if (Main.core.isRegistered()) {
                     sender.sendMessage(header+ChatColor.GREEN+"등록 완료");
                 } else {
                     sender.sendMessage(header+ChatColor.RED+"미등록");
@@ -118,12 +123,7 @@ public class MCSVCommandHandler {
                 );
             }
 
-            sender.sendMessage(
-                    "Copyright © "+
-                            ChatColor.GREEN+"mcsv.kr platform "+
-                            ChatColor.RESET+"and "+
-                            ChatColor.DARK_AQUA+"Ste"+ChatColor.BLUE+"lla"+ChatColor.DARK_PURPLE+" IT"
-            );
+            sender.sendMessage(MCSVCore.getCopyrightString());
         } else {
             sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
         }
@@ -132,7 +132,7 @@ public class MCSVCommandHandler {
     }
 
 
-    public static boolean generateLoginLink(CommandSender sender) {
+    private static boolean generateLoginLink(CommandSender sender) {
         if (sender.hasPermission("mcsv.login")) {
             URL url = Main.core.createAuthorizationRequest();
             if (url == null) {
@@ -163,7 +163,7 @@ public class MCSVCommandHandler {
     }
 
 
-    public static boolean showToken(CommandSender sender) {
+    private static boolean showToken(CommandSender sender) {
         if (sender.hasPermission("mcsv.token")) {
             if (!Main.core.isAuthorized()) {
                 sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"로그인 되어있지 않습니다!");
@@ -191,7 +191,7 @@ public class MCSVCommandHandler {
     }
 
 
-    public static boolean authorizeUsingAuthcode(CommandSender sender, String code) {
+    private static boolean authorizeUsingAuthcode(CommandSender sender, String code) {
         if (sender.hasPermission("mcsv.login")) {
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증서버와 통신을 시작합니다"
@@ -213,6 +213,25 @@ public class MCSVCommandHandler {
             sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
         }
 
+        return true;
+    }
+
+    private static boolean startSetup(CommandSender sender, boolean forceRegister) {
+        if (sender.hasPermission("mcsv.setup")) {
+            if (!Main.core.isAuthorized()) {
+                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"로그인 되어있지 않습니다!");
+                return true;
+            } else if (!forceRegister && Main.core.isRegistered()) {
+                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"이미 이 서버는 등록되어 있습니다!");
+                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"강제로 새로 등록하려면, "+ChatColor.GREEN+"/mcsv setup confirm"+ChatColor.RESET+" 을 대신 실행하세요.");
+                return true;
+            }
+
+            // do register logic
+
+        } else {
+            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
+        }
         return true;
     }
 }

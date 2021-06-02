@@ -37,8 +37,6 @@ public class MeilingClient {
     public static URL generateUrl(String path, Map<String, String> queries) {
         try {
             URL endpointURL = new URL(meilingEndpoint);
-            System.out.println(endpointURL);
-
             URI prevUri = new URI(endpointURL.getProtocol(), null, endpointURL.getHost(), -1, path, "", "");
 
             String query = MeilingUtils.createQueryString(prevUri.getQuery(), queries, true);

@@ -1,6 +1,6 @@
 package kr.mcsv.client;
 
-import kr.mcsv.client.core.MCSVCommandHandler;
+import kr.mcsv.client.core.MCSVCommand;
 import kr.mcsv.client.core.MCSVCore;
 
 import org.bukkit.Bukkit;
@@ -45,9 +45,9 @@ public final class Main extends JavaPlugin {
 
         File credentialsFile = new File(this.getDataFolder(), "credentials.yml");
 
-        core = new MCSVCore();
-        core.setCredentialsFile(credentialsFile);
-        core.loadCredentialsFile();
+        core = new MCSVCore(null);
+        core.setConfigFile(credentialsFile);
+        core.loadConfigFromConfigFile();
     }
 
     @Override
@@ -73,11 +73,11 @@ public final class Main extends JavaPlugin {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return MCSVCommandHandler.onTabComplete(sender, command, label, args);
+        return MCSVCommand.onTabComplete(sender, command, label, args);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return MCSVCommandHandler.onCommand(sender, command, label, args);
+        return MCSVCommand.onCommand(sender, command, label, args);
     }
 }

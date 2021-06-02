@@ -4,38 +4,47 @@ import com.stella_it.meiling.InvalidRefreshTokenException;
 import com.stella_it.meiling.MeilingAuthorization;
 import com.stella_it.meiling.MeilingAuthorizationMethod;
 import com.stella_it.meiling.MeilingClient;
+import me.alex4386.gachon.network.common.http.HttpRequest;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MCSVCore {
     public static String clientId = "33ead755-dd70-4d3f-b29a-3a11d5956e41";
     public static String clientScope = "openid profile email https://api.mcsv.kr";
 
+    public static String mcsvAPI = "https://api.mcsv.kr";
+
     private MeilingClient client;
     private MeilingAuthorization authorization = null;
 
-    private File credentialsFile = null;
+    private String serverId = null;
 
+    private File configFile = null;
 
-    public MCSVCore() {
-        this.client = new MeilingClient(clientId);
+    public MCSVCore(MeilingClient client) {
+        if (client == null) {
+            this.client = new MeilingClient(clientId);
+        } else {
+            this.client = client;
+        }
     }
 
-    public MCSVCore(String clientId) {
-        this.client = new MeilingClient(clientId);
-    }
+    public MCSVCore(MeilingClient client, String serverId) {
+        if (client == null) {
+            this.client = new MeilingClient(clientId);
+        } else {
+            this.client = client;
+        }
 
-    public MCSVCore(String clientId, String clientSecret) {
-        this.client = new MeilingClient(clientId, clientSecret);
+        this.serverId = serverId;
     }
-
 
     private String[] getClientScope() {
         return clientScope.split(" ");
@@ -59,23 +68,32 @@ public class MCSVCore {
         }
 
         this.authorization = authorization;
-        this.saveCredentialsFile();
+        this.saveCredentialsToConfigFile();
         return true;
     }
 
     public boolean isAuthorized() {
         return this.authorization != null;
     }
-
-    public void setCredentialsFile(File file) {
-        this.credentialsFile = file;
+    public boolean isRegistered() {
+        return this.isAuthorized() && true;
     }
 
-    public void loadCredentialsFile() {
+    public File getConfigFile() { return this.configFile; }
+    public void setConfigFile(File file) {
+        this.configFile = file;
+    }
+
+    public void loadConfigFromConfigFile() {
+        this.loadCredentialsFromConfigFile();
+        this.loadServerIdFromConfigFile();
+    }
+
+    public void loadCredentialsFromConfigFile() {
         try {
-            if (this.credentialsFile != null) {
+            if (this.configFile != null) {
                 YamlConfiguration configuration = new YamlConfiguration();
-                configuration.load(credentialsFile);
+                configuration.load(configFile);
 
                 String accessToken = configuration.getString("credentials.accessToken", null);
                 String refreshToken = configuration.getString("credentials.refreshToken", null);
@@ -91,8 +109,23 @@ public class MCSVCore {
         }
     }
 
-    public void saveCredentialsFile() {
-        if (this.credentialsFile != null) {
+    public void loadServerIdFromConfigFile() {
+        try {
+            if (this.configFile != null) {
+                YamlConfiguration configuration = new YamlConfiguration();
+                configuration.load(configFile);
+
+                String serverId = configuration.getString("server.id", null);
+
+                this.serverId = serverId;
+            }
+        } catch(IOException | InvalidConfigurationException e) {
+
+        }
+    }
+
+    public void saveCredentialsToConfigFile() {
+        if (this.configFile != null) {
             try {
                 YamlConfiguration configuration = new YamlConfiguration();
 
@@ -110,7 +143,7 @@ public class MCSVCore {
                 configuration.set("credentials.accessToken", accessToken);
                 configuration.set("credentials.refreshToken", refreshToken);
 
-                configuration.save(credentialsFile);
+                configuration.save(configFile);
             } catch(IOException e) {
 
             }
@@ -131,5 +164,21 @@ public class MCSVCore {
         }
 
         return null;
+    }
+
+    public static String getCopyrightString() {
+        return "Copyright © "+
+                ChatColor.GREEN+"mcsv.kr platform "+
+                ChatColor.RESET+"and "+
+                ChatColor.DARK_AQUA+"Ste"+ChatColor.BLUE+"lla"+ChatColor.DARK_PURPLE+" IT";
+    }
+
+    public void setHttpRequestAuthorizationHeader(HttpRequest request) throws InvalidRefreshTokenException {
+        String accessToken = this.getAccessToken();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Authorization", "Bearer "+accessToken);
+
+        request.addHeaders(headers);
     }
 }
