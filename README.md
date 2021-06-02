@@ -9,8 +9,8 @@ To be declared...
 ## Target System
 Due to legacy compatibility, MCSV.KR Client targets Java 8 by default.  
   
-But in the near future, MCSV.KR Client will target Java 11 for improved support with PaperMC.  
-For more information: [https://papermc.io/java11](https://papermc.io/java11)
+But in the near future, MCSV.KR Client will target Java 16 for improved support for [PaperMC](https://papermc.io) and [Minecraft 1.17+](https://www.minecraft.net/en-us/article/minecraft-snapshot-21w19a).  
+For more information: [https://papermc.io/java16](https://papermc.io/java16)
 
 Currently, MCSV.KR Client works best on Java 8 with Minecraft version 1.16.5.  
 
