@@ -5,15 +5,20 @@ import com.stella_it.meiling.MeilingAuthorization;
 import com.stella_it.meiling.MeilingAuthorizationMethod;
 import com.stella_it.meiling.MeilingClient;
 import me.alex4386.gachon.network.common.http.HttpRequest;
+import me.alex4386.gachon.network.common.http.HttpRequestMethod;
+import me.alex4386.gachon.network.common.http.HttpResponse;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class MCSVCore {
     public static String clientId = "33ead755-dd70-4d3f-b29a-3a11d5956e41";
@@ -124,6 +129,20 @@ public class MCSVCore {
         }
     }
 
+
+    public void saveServerIdToConfigFile() {
+        if (this.configFile != null) {
+            try {
+                YamlConfiguration configuration = new YamlConfiguration();
+                configuration.set("server.id", this.serverId);
+
+                configuration.save(configFile);
+            } catch(IOException e) {
+
+            }
+        }
+    }
+
     public void saveCredentialsToConfigFile() {
         if (this.configFile != null) {
             try {
@@ -180,5 +199,38 @@ public class MCSVCore {
         headers.put("Authorization", "Bearer "+accessToken);
 
         request.addHeaders(headers);
+    }
+
+    public boolean registerServer() {
+        JSONObject json = new JSONObject();
+        String hostname;
+
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch(UnknownHostException e) {
+            Random random = new Random();
+
+            hostname = "MCSV-"+String.format("%05d", random.nextInt(100000));
+        }
+
+        json.put("name", hostname);
+
+        try {
+            HttpRequest request = new HttpRequest(HttpRequestMethod.POST, new URL(mcsvAPI+"/servers"), json);
+            HttpResponse response = request.getResponse();
+
+            if (!response.code.isOK()) {
+                return false;
+            }
+
+            JSONObject responseJson = response.toJson();
+            this.serverId = (String) responseJson.get("uid");
+            this.saveServerIdToConfigFile();
+
+            return true;
+        } catch(IOException | ParseException e) {
+
+            return false;
+        }
     }
 }

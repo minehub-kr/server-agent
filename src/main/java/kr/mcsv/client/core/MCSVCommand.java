@@ -228,6 +228,14 @@ public class MCSVCommand {
             }
 
             // do register logic
+            boolean isSuccess = Main.core.registerServer();
+
+            if (!isSuccess) {
+                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"서버 등록에 실패 했습니다! 다시 시도 하세요.");
+                return true;
+            }
+
+            sender.sendMessage(ChatColor.GREEN+"[등록] "+ChatColor.RESET+"서버 등록에 성공했습니다.");
 
         } else {
             sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
