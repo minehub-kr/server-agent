@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [1.8, 1.12, 1.15]
+        java-version: [1.8, 1.12, 1.16]
 
     steps:
       - uses: actions/checkout@v2
@@ -20,12 +20,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
-      - name: Setup Spigot Build Environment
+      - name: Setup Spigot Build Environment for Minecraft 1.16.5
         run: |
           mkdir BuildTools
           cd BuildTools
           wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-          java -jar BuildTools.jar --rev latest
+          java -jar BuildTools.jar --rev 1.16.5
           cd ..
       - name: Update version of maven file to ${{ github.event.release.tag_name }}
         run: mvn versions:set -DnewVersion=${VER_TAG:1}
