@@ -1,6 +1,6 @@
 package kr.mcsv.client;
 
-import kr.mcsv.client.core.MCSVCommand;
+import kr.mcsv.client.command.MCSVCommand;
 import kr.mcsv.client.core.MCSVCore;
 
 import org.bukkit.Bukkit;

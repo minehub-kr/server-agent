@@ -89,4 +89,8 @@ public class MeilingUtils {
 
         return result.toString();
     }
+
+    public static String[] parseScopeString(String scope) {
+        return scope.split(" ");
+    }
 }

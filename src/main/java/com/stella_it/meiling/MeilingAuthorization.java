@@ -54,6 +54,7 @@ public class MeilingAuthorization {
     }
 
     public static double getTokenExpiration(MeilingTokenType type, String token) throws IOException {
+        if (token == null) return -1;
         JSONObject data = checkTokenInfo(type, token);
 
         double expiration = (double) data.get("expires_in");
