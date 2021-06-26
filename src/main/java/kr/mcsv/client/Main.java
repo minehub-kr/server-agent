@@ -47,7 +47,7 @@ public final class Main extends JavaPlugin {
 
         core = new MCSVCore(null);
         core.setConfigFile(credentialsFile);
-        core.loadConfigFromConfigFile();
+        core.load();
     }
 
     @Override

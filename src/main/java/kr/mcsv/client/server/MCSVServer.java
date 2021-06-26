@@ -5,6 +5,7 @@ import kr.mcsv.client.core.MCSVCore;
 import me.alex4386.gachon.network.common.http.HttpRequest;
 import me.alex4386.gachon.network.common.http.HttpRequestMethod;
 import me.alex4386.gachon.network.common.http.HttpResponse;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -23,6 +24,16 @@ public class MCSVServer {
 
     public boolean isRegistered() {
         return this.serverId != null;
+    }
+
+    public void importConfig(YamlConfiguration config) {
+        this.serverId = config.getString("server.id", null);
+    }
+
+    public void exportConfig(YamlConfiguration config) {
+        if (this.serverId != null) {
+            config.set("server.id", this.serverId);
+        }
     }
 
     /* Server creation */

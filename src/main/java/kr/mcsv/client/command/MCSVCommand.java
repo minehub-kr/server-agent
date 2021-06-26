@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MCSVCommand {
+    public static boolean hasPermission(CommandSender sender, String node) {
+        return sender.hasPermission("mcsv."+node);
+    }
+
     public static List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> result = new ArrayList<>();
         String commandName = label.toLowerCase();
@@ -23,11 +27,11 @@ public class MCSVCommand {
 
         if (commandName.equals("mcsv")) {
             if (currentInput == 0) {
-                if (sender.hasPermission("mcsv.login")) {
+                if (MCSVCommand.hasPermission(sender, "login")) {
                     result.add("login");
                 }
 
-                if (sender.hasPermission("mcsv.setup")) {
+                if (MCSVCommand.hasPermission(sender, "setup")) {
                     result.add("setup");
                 }
             }
@@ -38,29 +42,45 @@ public class MCSVCommand {
 
     public static boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         String commandName = label.toLowerCase();
-        String subCommand = (args.length >= 1) ? args[0] : "";
 
         if (commandName.equals("mcsv")) {
-            if (subCommand.equals("")) {
-                return sendMCSVInfo(sender);
-            } else if (subCommand.equals("login")) {
-                if (args.length == 1) {
-                    return generateLoginLink(sender);
-                } else if (args.length == 2) {
-                    String authorizationCode = args[1];
-                    return authorizeUsingAuthcode(sender, authorizationCode);
-                } else {
-                    sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 인수입니다.");
-                }
-            } else if (subCommand.equals("setup")) {
-                boolean isForced = false;
-                if (args.length > 2) {
-                    isForced = args[1].toLowerCase().equals("confirm");
-                }
+            if (args.length >= 1) {
+                MCSVCommandAction action = MCSVCommandAction.getAction(args[0]);
 
-                return startSetup(sender, isForced);
-            } else if (subCommand.equals("token")) {
-                return showToken(sender);
+                switch (action) {
+                    case SETUP:
+                    {
+                        boolean isForced = false;
+                        if (args.length > 2) {
+                            isForced = args[1].toLowerCase().equals("confirm");
+                        }
+
+                        return startSetup(sender, isForced);
+                    }
+                    case LOGIN:
+                    {
+                        if (args.length == 1) {
+                            return generateLoginLink(sender);
+                        } else if (args.length == 2) {
+                            String authorizationCode = args[1];
+                            return authorizeUsingAuthcode(sender, authorizationCode);
+                        } else {
+                            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 인수입니다.");
+                        }
+                    }
+                        break;
+                    case TOKEN:
+                        return showToken(sender);
+                    case INFO:
+                        return sendMCSVInfo(sender);
+                    case HELP:
+                    default:
+                        sender.sendMessage(
+                                ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 버전: " + Main.version
+                        );
+                        MCSVCommandAction.getAllManual(sender, "mcsv", "");
+                        return true;
+                }
             }
             return true;
         }
@@ -91,36 +111,6 @@ public class MCSVCommand {
                 } else {
                     sender.sendMessage(header+ChatColor.RED+"미등록");
                 }
-            }
-
-            if (sender.hasPermission("mcsv.login")) {
-                sender.sendMessage(
-                        ChatColor.GREEN + "* " +
-                                ChatColor.BOLD + "/mcsv " +
-                                ChatColor.GRAY + "login " +
-                                ChatColor.DARK_GRAY + ": " +
-                                ChatColor.RESET + "MCSV.KR 플랫폼에 로그인합니다."
-                );
-            }
-
-            if (sender.hasPermission("mcsv.setup")) {
-                sender.sendMessage(
-                        ChatColor.GREEN + "* " +
-                                ChatColor.BOLD + "/mcsv " +
-                                ChatColor.GRAY + "setup " +
-                                ChatColor.DARK_GRAY + ": " +
-                                ChatColor.RESET + "MCSV.KR 플랫폼에 이 서버를 등록합니다."
-                );
-            }
-
-            if (sender.hasPermission("mcsv.token")) {
-                sender.sendMessage(
-                        ChatColor.GREEN + "* " +
-                                ChatColor.BOLD + "/mcsv " +
-                                ChatColor.GRAY + "token " +
-                                ChatColor.DARK_GRAY + ": " +
-                                ChatColor.RESET + "MCSV.KR 플랫폼에 로그인 하기 위한 토큰을 조회합니다."
-                );
             }
 
             sender.sendMessage(MCSVUtils.getCopyrightString());

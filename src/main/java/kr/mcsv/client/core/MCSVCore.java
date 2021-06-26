@@ -1,5 +1,6 @@
 package kr.mcsv.client.core;
 
+import com.stella_it.meiling.InvalidRefreshTokenException;
 import com.stella_it.meiling.MeilingAuthorization;
 import com.sun.istack.internal.Nullable;
 import kr.mcsv.client.authorization.MCSVAuthorization;
@@ -56,9 +57,29 @@ public class MCSVCore {
                 config.load(this.configFile);
 
                 this.authorization.importConfig(config);
+                this.server.importConfig(config);
 
                 return true;
             } catch (IOException | InvalidConfigurationException e) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean save() {
+        if (this.configFile != null) {
+            try {
+                YamlConfiguration config = new YamlConfiguration();
+                config.load(this.configFile);
+
+                this.authorization.exportConfig(config);
+                this.server.exportConfig(config);
+
+                config.save(this.configFile);
+                return true;
+            } catch (IOException | InvalidConfigurationException | InvalidRefreshTokenException e) {
                 return false;
             }
         }
