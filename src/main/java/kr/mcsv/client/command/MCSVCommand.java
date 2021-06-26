@@ -197,6 +197,7 @@ public class MCSVCommand {
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증에 성공했습니다."
             );
+            Main.core.save();
 
             return true;
         } else {
