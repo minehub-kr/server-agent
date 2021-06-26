@@ -1,23 +1,15 @@
 package kr.mcsv.client.core;
 
 import com.stella_it.meiling.InvalidRefreshTokenException;
-import com.stella_it.meiling.MeilingAuthorization;
 import com.sun.istack.internal.Nullable;
 import kr.mcsv.client.authorization.MCSVAuthorization;
 import kr.mcsv.client.authorization.MCSVAuthorizationDefault;
 import kr.mcsv.client.server.MCSVServer;
-import me.alex4386.gachon.network.common.http.HttpRequest;
-import me.alex4386.gachon.network.common.http.HttpRequestMethod;
-import me.alex4386.gachon.network.common.http.HttpResponse;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.*;
-import java.util.Random;
 
 public class MCSVCore {
     public static String mcsvAPI = "https://api.mcsv.kr";
@@ -25,7 +17,7 @@ public class MCSVCore {
     public MCSVAuthorization authorization;
     public MCSVServer server = null;
 
-    private File configFile = null;
+    private File credentialsFile = null;
 
     public MCSVCore(@Nullable String serverId) {
         this.authorization = new MCSVAuthorization(
@@ -45,16 +37,16 @@ public class MCSVCore {
         }
     }
 
-    public File getConfigFile() { return this.configFile; }
-    public void setConfigFile(File file) {
-        this.configFile = file;
+    public File getCredentialsFile() { return this.credentialsFile; }
+    public void setCredentialsFile(File file) {
+        this.credentialsFile = file;
     }
 
     public boolean load() {
-        if (this.configFile != null) {
+        if (this.credentialsFile != null) {
             try {
                 YamlConfiguration config = new YamlConfiguration();
-                config.load(this.configFile);
+                config.load(this.credentialsFile);
 
                 this.authorization.importConfig(config);
                 this.server.importConfig(config);
@@ -69,15 +61,15 @@ public class MCSVCore {
     }
 
     public boolean save() {
-        if (this.configFile != null) {
+        if (this.credentialsFile != null) {
             try {
                 YamlConfiguration config = new YamlConfiguration();
-                config.load(this.configFile);
+                config.load(this.credentialsFile);
 
                 this.authorization.exportConfig(config);
                 this.server.exportConfig(config);
 
-                config.save(this.configFile);
+                config.save(this.credentialsFile);
                 return true;
             } catch (IOException | InvalidConfigurationException | InvalidRefreshTokenException e) {
                 return false;

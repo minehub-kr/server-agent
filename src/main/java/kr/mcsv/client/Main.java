@@ -46,7 +46,7 @@ public final class Main extends JavaPlugin {
         File credentialsFile = new File(this.getDataFolder(), "credentials.yml");
 
         core = new MCSVCore(null);
-        core.setConfigFile(credentialsFile);
+        core.setCredentialsFile(credentialsFile);
         core.load();
     }
 
