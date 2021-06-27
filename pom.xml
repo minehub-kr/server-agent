@@ -89,9 +89,9 @@
 
         <!-- Nullable Support -->
         <dependency>
-            <groupId>com.sun.istack</groupId>
-            <artifactId>istack-commons-tools</artifactId>
-            <version>3.0.5</version>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>16.0.1</version>
         </dependency>
     </dependencies>
 </project>

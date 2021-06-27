@@ -1,6 +1,6 @@
 package kr.mcsv.client.server;
 
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 import kr.mcsv.client.core.MCSVCore;
 import me.alex4386.gachon.network.common.http.HttpRequest;
 import me.alex4386.gachon.network.common.http.HttpRequestMethod;

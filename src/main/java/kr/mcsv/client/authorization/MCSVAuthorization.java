@@ -1,9 +1,9 @@
 package kr.mcsv.client.authorization;
 
 import com.stella_it.meiling.*;
-import com.sun.istack.internal.Nullable;
 import me.alex4386.gachon.network.common.http.HttpRequest;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.URL;

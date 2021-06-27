@@ -1,7 +1,7 @@
 package kr.mcsv.client.core;
 
+import org.jetbrains.annotations.Nullable;
 import com.stella_it.meiling.InvalidRefreshTokenException;
-import com.sun.istack.internal.Nullable;
 import kr.mcsv.client.authorization.MCSVAuthorization;
 import kr.mcsv.client.authorization.MCSVAuthorizationDefault;
 import kr.mcsv.client.server.MCSVServer;
