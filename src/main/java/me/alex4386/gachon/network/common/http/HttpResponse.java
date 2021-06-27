@@ -17,8 +17,6 @@ public class HttpResponse {
         int responseCode = conn.getResponseCode();
         this.code = HttpResponseCode.getResponse(responseCode);
 
-        System.out.println(conn.getResponseMessage());
-
         BufferedReader bufReader;
 
         if (this.code.isOK()) {

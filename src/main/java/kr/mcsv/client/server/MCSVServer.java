@@ -1,5 +1,7 @@
 package kr.mcsv.client.server;
 
+import com.stella_it.meiling.InvalidRefreshTokenException;
+import kr.mcsv.client.Main;
 import org.jetbrains.annotations.Nullable;
 import kr.mcsv.client.core.MCSVCore;
 import me.alex4386.gachon.network.common.http.HttpRequest;
@@ -57,7 +59,9 @@ public class MCSVServer {
         json.put("name", name);
 
         try {
-            HttpRequest request = new HttpRequest(HttpRequestMethod.POST, new URL(MCSVCore.mcsvAPI + "/servers"), json);
+            HttpRequest request = new HttpRequest(HttpRequestMethod.POST, new URL(MCSVCore.mcsvAPI + "/v1/servers"), json);
+
+            Main.core.authorization.setToken(request);
             HttpResponse response = request.getResponse();
 
             if (!response.code.isOK()) {
@@ -68,7 +72,7 @@ public class MCSVServer {
 
             String serverId = (String) responseJson.get("uid");
             return new MCSVServer(serverId);
-        } catch(IOException | ParseException e) {
+        } catch(IOException | ParseException | InvalidRefreshTokenException e) {
 
             return null;
         }

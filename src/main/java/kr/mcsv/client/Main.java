@@ -1,5 +1,6 @@
 package kr.mcsv.client;
 
+import kr.mcsv.client.authorization.MCSVAuthorizationDefault;
 import kr.mcsv.client.command.MCSVCommand;
 import kr.mcsv.client.core.MCSVCore;
 
@@ -44,10 +45,19 @@ public final class Main extends JavaPlugin {
         }
 
         File credentialsFile = new File(this.getDataFolder(), "credentials.yml");
+        if (!credentialsFile.exists()) {
+            try {
+                credentialsFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         core = new MCSVCore(null);
         core.setCredentialsFile(credentialsFile);
         core.load();
+
+        core.authorization.setScope(MCSVAuthorizationDefault.clientScope);
     }
 
     @Override

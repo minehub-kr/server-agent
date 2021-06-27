@@ -1,5 +1,6 @@
 package kr.mcsv.client.core;
 
+import kr.mcsv.client.Main;
 import org.jetbrains.annotations.Nullable;
 import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.mcsv.client.authorization.MCSVAuthorization;
@@ -24,17 +25,12 @@ public class MCSVCore {
                 MCSVAuthorizationDefault.clientId
         );
 
-        if (serverId != null) {
-            this.server = new MCSVServer(serverId);
-        }
+        this.server = new MCSVServer(serverId);
     }
 
     public MCSVCore(MCSVAuthorization authorization, @Nullable String serverId) {
         this.authorization = authorization;
-
-        if (serverId != null) {
-            this.server = new MCSVServer(serverId);
-        }
+        this.server = new MCSVServer(serverId);
     }
 
     public File getCredentialsFile() { return this.credentialsFile; }
@@ -44,6 +40,8 @@ public class MCSVCore {
 
     public boolean load() {
         if (this.credentialsFile != null) {
+            Main.logger.info("MCSV Core 크레덴셜 정보 불러오는 중...");
+
             try {
                 YamlConfiguration config = new YamlConfiguration();
                 config.load(this.credentialsFile);
@@ -62,6 +60,8 @@ public class MCSVCore {
 
     public boolean save() {
         if (this.credentialsFile != null) {
+            Main.logger.info("MCSV Core 크레덴셜 정보 저장 중...");
+
             try {
                 YamlConfiguration config = new YamlConfiguration();
                 config.load(this.credentialsFile);
@@ -82,11 +82,11 @@ public class MCSVCore {
     public boolean registerServer() { return this.registerServer(null); }
 
     public boolean registerServer(@Nullable String name) {
-        MCSVServer server = MCSVServer.createServer();
+        MCSVServer server = MCSVServer.createServer(name);
         if (server == null) {
-            this.server = server;
-            return true;
+            return false;
         }
-        return false;
+        this.server = server;
+        return true;
     }
 }

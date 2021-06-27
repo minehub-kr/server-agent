@@ -27,12 +27,10 @@ public class MCSVCommand {
 
         if (commandName.equals("mcsv")) {
             if (currentInput == 0) {
-                if (MCSVCommand.hasPermission(sender, "login")) {
-                    result.add("login");
-                }
-
-                if (MCSVCommand.hasPermission(sender, "setup")) {
-                    result.add("setup");
+                for (MCSVCommandAction action : MCSVCommandAction.values()) {
+                    if (action.hasPermission(sender)) {
+                        result.add(action.getCommand());
+                    }
                 }
             }
         }
@@ -46,6 +44,12 @@ public class MCSVCommand {
         if (commandName.equals("mcsv")) {
             if (args.length >= 1) {
                 MCSVCommandAction action = MCSVCommandAction.getAction(args[0]);
+                if (action == null) {
+                    sender.sendMessage(
+                            ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "올바르지 않은 명령입니다."
+                    );
+                    return true;
+                }
 
                 switch (action) {
                     case SETUP:
@@ -78,7 +82,9 @@ public class MCSVCommand {
                         sender.sendMessage(
                                 ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 버전: " + Main.version
                         );
-                        MCSVCommandAction.getAllManual(sender, "mcsv", "");
+                        sender.sendMessage(
+                                MCSVCommandAction.getAllManual(sender, "mcsv", "")
+                        );
                         return true;
                 }
             }
@@ -209,6 +215,10 @@ public class MCSVCommand {
 
     private static boolean startSetup(CommandSender sender, boolean forceRegister) {
         if (sender.hasPermission("mcsv.setup")) {
+            sender.sendMessage(
+                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼 중앙 서버에 서버 등록을 위한 통신을 시작합니다"
+            );
+
             if (!Main.core.authorization.isAuthorized()) {
                 sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"로그인 되어있지 않습니다!");
                 return true;
@@ -226,6 +236,7 @@ public class MCSVCommand {
                 return true;
             }
 
+            Main.core.save();
             sender.sendMessage(ChatColor.GREEN+"[등록] "+ChatColor.RESET+"서버 등록에 성공했습니다.");
 
         } else {
