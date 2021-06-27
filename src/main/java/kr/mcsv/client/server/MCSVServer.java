@@ -2,6 +2,7 @@ package kr.mcsv.client.server;
 
 import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.mcsv.client.Main;
+import kr.mcsv.client.api.MCSVAPI;
 import org.jetbrains.annotations.Nullable;
 import kr.mcsv.client.core.MCSVCore;
 import me.alex4386.gachon.network.common.http.HttpRequest;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class MCSVServer {
@@ -25,7 +28,13 @@ public class MCSVServer {
     }
 
     public boolean isRegistered() {
-        return this.serverId != null;
+        if (this.serverId == null) return false;
+        List<String> servers = MCSVAPI.getServers(Main.core.authorization, this.serverId);
+
+        if (servers == null) return true;
+        if (servers.contains(this.serverId)) return true;
+
+        return false;
     }
 
     public void importConfig(YamlConfiguration config) {

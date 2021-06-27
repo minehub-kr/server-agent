@@ -55,7 +55,9 @@ public class MeilingAuthorization {
 
     public static double getTokenExpiration(MeilingTokenType type, String token) throws IOException {
         if (token == null) return -1;
+
         JSONObject data = checkTokenInfo(type, token);
+        if (data == null) return -1;
 
         Object expirationRaw = data.get("expires_in");
         if (expirationRaw == null) return -1;
@@ -149,7 +151,10 @@ public class MeilingAuthorization {
             try {
                 JSONObject json = response.toJson();
                 this.accessToken = (String) json.get("access_token");
-                this.refreshToken = (String) json.get("refresh_token");
+
+                if (json.get("refresh_token") != null) {
+                    this.refreshToken = (String) json.get("refresh_token");
+                }
             } catch(ParseException e) {
                 return false;
             }

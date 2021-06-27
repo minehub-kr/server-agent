@@ -94,12 +94,12 @@ public class MCSVCommand {
     }
 
     private static boolean sendMCSVInfo(CommandSender sender) {
-        if (sender.hasPermission("mcsv.info")) {
+        if (MCSVCommand.hasPermission(sender, "info")) {
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 버전: " + Main.version
             );
 
-            if (sender.hasPermission("mcsv.checkLogin")) {
+            if (MCSVCommand.hasPermission(sender, "checkLogin")) {
                 String header = ChatColor.RESET + "로그인 상태: ";
 
                 if (Main.core.authorization.isAuthorized()) {
@@ -109,7 +109,7 @@ public class MCSVCommand {
                 }
             }
 
-            if (sender.hasPermission("mcsv.checkRegistered")) {
+            if (MCSVCommand.hasPermission(sender, "checkRegistered")) {
                 String header = ChatColor.RESET + "등록 상태: ";
 
                 if (Main.core.server.isRegistered()) {
@@ -129,7 +129,7 @@ public class MCSVCommand {
 
 
     private static boolean generateLoginLink(CommandSender sender) {
-        if (sender.hasPermission("mcsv.login")) {
+        if (MCSVCommand.hasPermission(sender, "login")) {
             URL url = Main.core.authorization.createRequest();
             if (url == null) {
                 sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"생성 중 오류 발생!");
@@ -160,7 +160,7 @@ public class MCSVCommand {
 
 
     private static boolean showToken(CommandSender sender) {
-        if (sender.hasPermission("mcsv.token")) {
+        if (MCSVCommand.hasPermission(sender, "token")) {
             if (!Main.core.authorization.isAuthorized()) {
                 sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"로그인 되어있지 않습니다!");
                 return true;
@@ -188,7 +188,7 @@ public class MCSVCommand {
 
 
     private static boolean authorizeUsingAuthcode(CommandSender sender, String code) {
-        if (sender.hasPermission("mcsv.login")) {
+        if (MCSVCommand.hasPermission(sender, "login")) {
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증서버와 통신을 시작합니다"
             );
@@ -214,7 +214,7 @@ public class MCSVCommand {
     }
 
     private static boolean startSetup(CommandSender sender, boolean forceRegister) {
-        if (sender.hasPermission("mcsv.setup")) {
+        if (MCSVCommand.hasPermission(sender, "setup")) {
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼 중앙 서버에 서버 등록을 위한 통신을 시작합니다"
             );

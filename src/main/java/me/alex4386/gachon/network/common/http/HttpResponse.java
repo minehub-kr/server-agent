@@ -1,5 +1,6 @@
 package me.alex4386.gachon.network.common.http;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -56,5 +57,12 @@ public class HttpResponse {
         JSONObject object = (JSONObject) jsonParser.parse(this.toString());
 
         return object;
+    }
+
+    public JSONArray toJsonArray() throws ParseException {
+        JSONParser jsonParser = new JSONParser();
+        JSONArray array = (JSONArray) jsonParser.parse(this.toString());
+
+        return array;
     }
 }
