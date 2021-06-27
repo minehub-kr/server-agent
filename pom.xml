@@ -86,5 +86,12 @@
             <artifactId>Java-WebSocket</artifactId>
             <version>1.5.1</version>
         </dependency>
+
+        <!-- Nullable Support -->
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-tools</artifactId>
+            <version>3.0.5</version>
+        </dependency>
     </dependencies>
 </project>
