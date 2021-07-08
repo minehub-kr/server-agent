@@ -17,6 +17,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MCSVAPI {
+    public static boolean checkOnline() {
+        try {
+            HttpRequest req = new HttpRequest(HttpRequestMethod.GET, new URL(MCSVCore.mcsvAPI));
+            HttpResponse res = req.getResponse();
+
+            if (!res.code.isOK()) {
+                return false;
+            }
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static List<String> getServers(MCSVAuthorization authorization, String serverId) {
         List<String> servers = new ArrayList<>();
 

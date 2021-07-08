@@ -3,6 +3,7 @@ package kr.mcsv.client.command;
 import com.stella_it.meiling.InvalidRefreshTokenException;
 import com.stella_it.meiling.MeilingAuthorizationMethod;
 import kr.mcsv.client.Main;
+import kr.mcsv.client.api.MCSVAPI;
 import kr.mcsv.client.server.MCSVServer;
 import kr.mcsv.client.utils.MCSVUtils;
 import org.bukkit.ChatColor;
@@ -99,6 +100,15 @@ public class MCSVCommand {
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 버전: " + Main.version
             );
 
+
+            if (!MCSVAPI.checkOnline()) {
+                sender.sendMessage(
+                        ChatColor.RED + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다."
+                );
+
+                return true;
+            }
+
             if (MCSVCommand.hasPermission(sender, "checkLogin")) {
                 String header = ChatColor.RESET + "로그인 상태: ";
 
@@ -189,6 +199,14 @@ public class MCSVCommand {
 
     private static boolean authorizeUsingAuthcode(CommandSender sender, String code) {
         if (MCSVCommand.hasPermission(sender, "login")) {
+            if (!MCSVAPI.checkOnline()) {
+                sender.sendMessage(
+                        ChatColor.RED + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다."
+                );
+
+                return true;
+            }
+
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증서버와 통신을 시작합니다"
             );
@@ -215,6 +233,14 @@ public class MCSVCommand {
 
     private static boolean startSetup(CommandSender sender, boolean forceRegister) {
         if (MCSVCommand.hasPermission(sender, "setup")) {
+            if (!MCSVAPI.checkOnline()) {
+                sender.sendMessage(
+                        ChatColor.RED + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다."
+                );
+
+                return true;
+            }
+
             sender.sendMessage(
                     ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼 중앙 서버에 서버 등록을 위한 통신을 시작합니다"
             );
