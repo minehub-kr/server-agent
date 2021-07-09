@@ -60,14 +60,16 @@ public class MCSVAPI {
 
     public static boolean reportMetadata(MCSVAuthorization authorization, String serverId, JSONObject json) {
         try {
-            HttpRequest request = new HttpRequest(HttpRequestMethod.PUT, new URL(MCSVCore.mcsvAPI + "/servers/" + serverId + "/metadata"), json);
+            HttpRequest request = new HttpRequest(HttpRequestMethod.PUT, new URL(MCSVCore.mcsvAPI + "/v1/servers/" + serverId + "/metadata"), json);
+            authorization.setToken(request);
+
             HttpResponse response = request.getResponse();
 
             JSONObject responseJson = response.toJson();
             boolean success = (boolean) responseJson.get("success");
 
             return success;
-        } catch (IOException | ParseException e) {
+        } catch (IOException | ParseException | InvalidRefreshTokenException e) {
             return false;
         }
     }
