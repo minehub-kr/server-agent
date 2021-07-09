@@ -30,16 +30,23 @@ public class MCSVUtils {
     }
 
     public static JSONObject createMetadataJSON() {
+        return MCSVUtils.createMetadataJSON(false);
+    }
+
+    public static JSONObject createMetadataJSON(boolean includeRaw) {
         JSONObject json = new JSONObject();
 
         json.put("version",  1);
         json.put("os", MCSVUtils.createOSMetadataJSON());
         json.put("java", MCSVUtils.createJavaMetadataJSON());
         json.put("process", MCSVUtils.createProcessMetadataJSON());
-        json.put("raw", MCSVUtils.createRAWMetadataJSON());
         json.put("cpu", MCSVUtils.createCPUMetadataJSON());
         json.put("memory", MCSVUtils.createMemoryMetadataJSON());
         json.put("hardware", MCSVUtils.createHardwareMetadataJSON());
+
+        if (includeRaw) {
+            json.put("raw", MCSVUtils.createRAWMetadataJSON());
+        }
 
         return json;
     }
