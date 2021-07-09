@@ -57,4 +57,18 @@ public class MCSVAPI {
 
         return servers;
     }
+
+    public static boolean reportMetadata(MCSVAuthorization authorization, String serverId, JSONObject json) {
+        try {
+            HttpRequest request = new HttpRequest(HttpRequestMethod.PUT, new URL(MCSVCore.mcsvAPI + "/servers/" + serverId + "/metadata"), json);
+            HttpResponse response = request.getResponse();
+
+            JSONObject responseJson = response.toJson();
+            boolean success = (boolean) responseJson.get("success");
+
+            return success;
+        } catch (IOException | ParseException e) {
+            return false;
+        }
+    }
 }
