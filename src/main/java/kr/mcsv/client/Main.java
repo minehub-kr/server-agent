@@ -1,5 +1,6 @@
 package kr.mcsv.client;
 
+import kr.mcsv.client.api.MCSVAPI;
 import kr.mcsv.client.authorization.MCSVAuthorizationDefault;
 import kr.mcsv.client.command.MCSVCommand;
 import kr.mcsv.client.core.MCSVCore;
@@ -58,6 +59,12 @@ public final class Main extends JavaPlugin {
         core.load();
 
         core.authorization.setScope(MCSVAuthorizationDefault.clientScope);
+
+        if (core.authorization.isAuthorized() && core.server.isRegistered()) {
+            new Thread((Runnable) () -> {
+                core.server.updateMetadata();
+            }).start();
+        }
     }
 
     @Override

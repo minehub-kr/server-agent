@@ -3,6 +3,7 @@ package kr.mcsv.client.server;
 import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.api.MCSVAPI;
+import kr.mcsv.client.utils.MCSVUtils;
 import org.jetbrains.annotations.Nullable;
 import kr.mcsv.client.core.MCSVCore;
 import me.alex4386.gachon.network.common.http.HttpRequest;
@@ -47,6 +48,10 @@ public class MCSVServer {
         }
     }
 
+    public String getServerId() {
+        return this.serverId;
+    }
+
     /* Server creation */
     public static MCSVServer createServer() {
         return MCSVServer.createServer(null);
@@ -85,5 +90,9 @@ public class MCSVServer {
 
             return null;
         }
+    }
+
+    public boolean updateMetadata() {
+        return MCSVAPI.reportMetadata(Main.core.authorization, this.serverId, MCSVUtils.createMetadataJSON());
     }
 }
