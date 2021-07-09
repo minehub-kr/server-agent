@@ -93,5 +93,19 @@
             <artifactId>annotations</artifactId>
             <version>16.0.1</version>
         </dependency>
+
+        <!-- System Info -->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>5.7.5</version>
+        </dependency>
+
+        <!-- Jackson JSON postprocessing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.4</version>
+        </dependency>
     </dependencies>
 </project>

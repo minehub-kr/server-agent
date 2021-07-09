@@ -12,6 +12,7 @@ public enum MCSVCommandAction {
     SETUP("setup", "", "mcsv.kr platform에 이 서버를 등록합니다."),
     LOGIN("login", "", "mcsv.kr platform 으로 로그인합니다."),
     INFO("info", "", "mcsv.kr client 정보를 표시합니다."),
+    DEBUG("debug", "<? command>", "mcsv.kr client를 디버깅 하기 위한 명령을 실행 합니다"),
     TOKEN("token", "", "(Debug) oAuth2 인증용 토큰을 표시합니다.");
 
     String cmdline;

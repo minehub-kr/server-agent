@@ -5,14 +5,17 @@ import com.stella_it.meiling.MeilingAuthorizationMethod;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.api.MCSVAPI;
 import kr.mcsv.client.server.MCSVServer;
+import kr.mcsv.client.utils.MCSVLowLevelUtils;
 import kr.mcsv.client.utils.MCSVUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MCSVCommand {
     public static boolean hasPermission(CommandSender sender, String node) {
@@ -76,6 +79,8 @@ public class MCSVCommand {
                         break;
                     case TOKEN:
                         return showToken(sender);
+                    case DEBUG:
+                        return runDebug(sender, args.length >= 2 ? args[1] : null);
                     case INFO:
                         return sendMCSVInfo(sender);
                     case HELP:
@@ -268,6 +273,25 @@ public class MCSVCommand {
         } else {
             sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
         }
+        return true;
+    }
+
+    public static boolean runDebug(CommandSender sender, @Nullable String command) {
+        if (command == null) {
+            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"Debug 명령어가 감지되지 않았습니다.");
+            return true;
+        }
+
+        String commandDetect = command.toLowerCase();
+        switch(commandDetect) {
+            case "metadata":
+                sender.sendMessage(MCSVUtils.createMetadataJSON().toJSONString());
+                break;
+            case "env":
+                sender.sendMessage(MCSVLowLevelUtils.rawSystemEnvironmentJSON().toJSONString());
+        }
+
+
         return true;
     }
 }
