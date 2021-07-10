@@ -69,6 +69,9 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        logger.info("reporting mcsv.kr platform about server shutdown...");
+        core.server.reportServerShutdown();
+
         logger.info("mcsv.kr client is shutting down...");
     }
 
