@@ -14,6 +14,8 @@ public class HttpResponse {
     public HttpResponseCode code;
     public String response;
 
+    boolean enableDebug = false;
+
     public HttpResponse(HttpURLConnection conn) throws IOException {
         int responseCode = conn.getResponseCode();
         this.code = HttpResponseCode.getResponse(responseCode);
@@ -45,6 +47,11 @@ public class HttpResponse {
         conn.disconnect();
 
         this.response = stringBuilder.toString();
+
+        if (this.enableDebug) {
+            System.out.println("Code: "+this.code.getCode());
+            System.out.println("Resp: \n"+this.response);
+        }
     }
 
     @Override
