@@ -62,7 +62,7 @@ public final class Main extends JavaPlugin {
 
         if (core.authorization.isAuthorized() && core.server.isRegistered()) {
             new Thread((Runnable) () -> {
-                core.server.updateMetadata();
+                core.server.reportServerStartup();
             }).start();
         }
     }

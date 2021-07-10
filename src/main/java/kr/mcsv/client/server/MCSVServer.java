@@ -92,6 +92,10 @@ public class MCSVServer {
         }
     }
 
+    public boolean reportServerStartup() {
+        return MCSVAPI.reportServerStartup(Main.core.authorization, this.serverId, MCSVUtils.createServerStartupJSON());
+    }
+
     public boolean updateMetadata() {
         return MCSVAPI.reportMetadata(Main.core.authorization, this.serverId, MCSVUtils.createMetadataJSON());
     }

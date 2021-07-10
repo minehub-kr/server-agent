@@ -37,6 +37,27 @@ public class MCSVUtils {
         JSONObject json = new JSONObject();
 
         json.put("version",  1);
+        json.put("serverInfo", MCSVUtils.createServerInfoJSON());
+
+        return json;
+    }
+
+    public static JSONObject createServerStartupJSON() {
+        JSONObject json = new JSONObject();
+
+        json.put("version",  1);
+        json.put("serverInfo", MCSVUtils.createServerInfoJSON());
+
+        return json;
+    }
+
+    public static JSONObject createServerInfoJSON() {
+        return MCSVUtils.createServerInfoJSON(false);
+    }
+
+    public static JSONObject createServerInfoJSON(boolean includeRaw) {
+        JSONObject json = new JSONObject();
+
         json.put("os", MCSVUtils.createOSMetadataJSON());
         json.put("java", MCSVUtils.createJavaMetadataJSON());
         json.put("process", MCSVUtils.createProcessMetadataJSON());
