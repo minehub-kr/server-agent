@@ -64,10 +64,20 @@ public class MCSVUtils {
         json.put("cpu", MCSVUtils.createCPUMetadataJSON());
         json.put("memory", MCSVUtils.createMemoryMetadataJSON());
         json.put("hardware", MCSVUtils.createHardwareMetadataJSON());
+        json.put("network", MCSVUtils.createNetworkMetadataJSON());
 
         if (includeRaw) {
             json.put("raw", MCSVUtils.createRAWMetadataJSON());
         }
+
+        return json;
+    }
+
+    public static JSONObject createNetworkMetadataJSON() {
+        JSONObject json = new JSONObject();
+
+        json.put("ip", MCSVNetworkUtils.getLocalIP().toString());
+        json.put("publicIp", MCSVNetworkUtils.getPublicIP().toString());
 
         return json;
     }
