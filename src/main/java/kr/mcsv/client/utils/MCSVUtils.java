@@ -76,8 +76,8 @@ public class MCSVUtils {
     public static JSONObject createNetworkMetadataJSON() {
         JSONObject json = new JSONObject();
 
-        json.put("ip", MCSVNetworkUtils.getLocalIP().toString());
-        json.put("publicIp", MCSVNetworkUtils.getPublicIP().toString());
+        json.put("ip", MCSVNetworkUtils.getLocalIP().getHostAddress());
+        json.put("publicIp", MCSVNetworkUtils.getPublicIP().getHostAddress());
 
         return json;
     }

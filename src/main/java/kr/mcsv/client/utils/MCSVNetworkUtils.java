@@ -16,7 +16,7 @@ public class MCSVNetworkUtils {
             HttpRequest req = new HttpRequest(HttpRequestMethod.GET, new URL("https://icanhazip.com"));
             HttpResponse res = req.getResponse();
 
-            return InetAddress.getByName(res.response);
+            return InetAddress.getByName(res.response.trim());
         } catch (IOException e) {
             e.printStackTrace();
 

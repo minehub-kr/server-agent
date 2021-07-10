@@ -62,7 +62,13 @@ public class MeilingAuthorization {
         Object expirationRaw = data.get("expires_in");
         if (expirationRaw == null) return -1;
 
-        double expiration = (double) expirationRaw;
+        double expiration;
+        if (expirationRaw instanceof Long) {
+            expiration = ((Long) expirationRaw).doubleValue();
+        } else {
+            expiration = (double) expirationRaw;
+        }
+
         return expiration;
     }
 

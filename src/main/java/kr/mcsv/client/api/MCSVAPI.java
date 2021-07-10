@@ -74,7 +74,7 @@ public class MCSVAPI {
         }
     }
 
-    public static boolean reportServerShutdown(MCSVAuthorization authorization, String serverId, JSONObject json) {
+    public static boolean reportServerShutdown(MCSVAuthorization authorization, String serverId) {
         try {
             HttpRequest request = new HttpRequest(HttpRequestMethod.POST, new URL(MCSVCore.mcsvAPI + "/v1/servers/" + serverId + "/shutdown"));
             authorization.setToken(request);
