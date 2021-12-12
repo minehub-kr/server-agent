@@ -1,9 +1,16 @@
+; TeeOutputStream
+
+<!-- Websocket Implementation -->
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
+    <modelVersion>4.0.0</modelVers; https://github.com/TooTallNate/Java-WebSocketion>
+        <dependency>
+  <groupId>org.java-websocket</groupId>
+  <artifactId>Java-WebSocket</artifactId>
+  <version>1.5.2</version>
+</dependency>
     <groupId>kr.mcsv</groupId>
     <artifactId>client</artifactId>
     <version>0.0.1-ALPHA</version>
@@ -108,11 +115,18 @@
             <version>2.12.4</version>
         </dependency>
 
-        <!-- Apache IO since I am lazy to write all multiplexing stuff -->
+        <!-- Apache IO since I am lazy to write all multiplexing stuff; TeeOutputStream -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
+        </dependency>
+
+        <!-- Websocket Implementation; https://github.com/TooTallNate/Java-WebSocket -->
+        <dependency>
+            <groupId>org.java-websocket</groupId>
+            <artifactId>Java-WebSocket</artifactId>
+            <version>1.5.2</version>
         </dependency>
     </dependencies>
 </project>
