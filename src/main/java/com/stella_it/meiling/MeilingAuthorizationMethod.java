@@ -9,8 +9,7 @@ public enum MeilingAuthorizationMethod {
     private String requestCode;
 
     MeilingAuthorizationMethod(String method) {
-        this.method = method;
-        this.requestCode = null;
+        this(method, null);
     }
 
     MeilingAuthorizationMethod(String method, String requestCode) {

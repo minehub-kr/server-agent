@@ -17,8 +17,7 @@ public class MeilingAuthorization {
     String refreshToken = null;
 
     public MeilingAuthorization(MeilingClient client, String accessToken) {
-        this.client = client;
-        this.accessToken = accessToken;
+        this(client, accessToken, null);
     }
 
     public MeilingAuthorization(MeilingClient client, String accessToken, String refreshToken) {

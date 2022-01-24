@@ -20,9 +20,7 @@ public class MCSVAuthorization {
     private MeilingAuthorization authorization = null;
 
     public MCSVAuthorization(String clientId) {
-        this.clientId = clientId;
-
-        this.client = new MeilingClient(clientId);
+        this(clientId, null);
     }
 
     public MCSVAuthorization(String clientId, String clientSecret) {

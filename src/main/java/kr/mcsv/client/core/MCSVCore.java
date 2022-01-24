@@ -21,11 +21,12 @@ public class MCSVCore {
     private File credentialsFile = null;
 
     public MCSVCore(@Nullable String serverId) {
-        this.authorization = new MCSVAuthorization(
+        this(
+            new MCSVAuthorization(
                 MCSVAuthorizationDefault.clientId
+            ),
+            serverId
         );
-
-        this.server = new MCSVServer(serverId);
     }
 
     public MCSVCore(MCSVAuthorization authorization, @Nullable String serverId) {

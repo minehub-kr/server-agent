@@ -22,7 +22,7 @@ public class MeilingClient {
     public String codeVerifier = null;
 
     public MeilingClient(String clientId) {
-        this.clientId = clientId;
+        this(clientId, null);
     }
 
     public MeilingClient(String clientId, String clientSecret) {

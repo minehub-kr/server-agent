@@ -28,12 +28,7 @@ public class HttpRequest {
     }
 
     public HttpRequest(HttpRequestMethod method, URL url, JSONObject jsonObject) {
-        this.method = method;
-        this.url = url;
-
-        this.body = jsonObject.toJSONString();
-
-        headers.put("Content-Type", "application/json;charset=utf-8");
+        this(method, url, "application/json;charset=utf-8", jsonObject.toJSONString());
     }
 
     public HttpRequest(HttpRequestMethod method, URL url, String contentType, String body) {
