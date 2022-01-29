@@ -93,6 +93,9 @@ public class MCSVCommand {
                         );
                         return true;
                 }
+            } else {
+                // fallback to help.
+                return onCommand(sender, command, label, new String[]{"help"});
             }
             return true;
         }
