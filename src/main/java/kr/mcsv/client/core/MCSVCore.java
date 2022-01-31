@@ -9,8 +9,10 @@ import kr.mcsv.client.server.MCSVServer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class MCSVCore {
     public static String mcsvAPI = "https://api.mcsv.kr";
@@ -19,7 +21,6 @@ public class MCSVCore {
     public MCSVServer server = null;
 
     private File credentialsFile = null;
-
     public MCSVCore(@Nullable String serverId) {
         this(
             new MCSVAuthorization(
