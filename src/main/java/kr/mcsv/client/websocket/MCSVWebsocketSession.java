@@ -2,8 +2,10 @@ package kr.mcsv.client.websocket;
 
 import com.neovisionaries.ws.client.*;
 import com.stella_it.meiling.InvalidRefreshTokenException;
+import kr.mcsv.client.Main;
 import kr.mcsv.client.authorization.MCSVAuthorization;
 import kr.mcsv.client.core.MCSVCore;
+import kr.mcsv.client.server.MCSVServer;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -16,9 +18,9 @@ public class MCSVWebsocketSession {
     WebSocket ws;
     WebSocketAdapter adapter = null;
 
-    private MCSVCore core;
-    public MCSVWebsocketSession(MCSVCore core) {
-        this.core = core;
+    private MCSVServer server;
+    public MCSVWebsocketSession(MCSVServer server) {
+        this.server = server;
     }
 
     public WebSocket connect() throws IOException, InvalidRefreshTokenException, WebSocketException {
@@ -28,7 +30,7 @@ public class MCSVWebsocketSession {
         if (this.ws == null) {
             WebSocketFactory factory = new WebSocketFactory();
 
-            URI wsURI = URI.create("wss://api.mcsv.kr/servers/"+this.core.server.getServerId()+"/ws");
+            URI wsURI = URI.create("wss://api.mcsv.kr/servers/"+this.server.getServerId()+"/ws");
             factory.setServerName(wsURI.getHost());
 
             ws = factory.createSocket("wss://localhost/endpoint");
@@ -40,7 +42,7 @@ public class MCSVWebsocketSession {
             this.adapter = new MCSVWebsocketListener(this);
         }
 
-        ws.addHeader("Authorization", "Bearer "+this.core.authorization.getAccessToken());
+        ws.addHeader("Authorization", "Bearer "+ Main.core.authorization.getAccessToken());
         ws.addListener(this.adapter);
 
         ws.connect();

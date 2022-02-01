@@ -60,10 +60,12 @@ public final class Main extends JavaPlugin {
 
         core.authorization.setScope(MCSVAuthorizationDefault.clientScope);
 
-        if (core.authorization.isAuthorized() && core.server.isRegistered()) {
-            new Thread((Runnable) () -> {
-                core.server.reportServerStartup();
-            }).start();
+        if (core.authorization.isAuthorized()) {
+            if (core.server != null && core.server.isRegistered()) {
+                new Thread((Runnable) () -> {
+                    core.server.reportServerStartup();
+                }).start();
+            }
         }
     }
 
