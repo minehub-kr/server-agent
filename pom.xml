@@ -67,12 +67,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.neovisionaries</groupId>
-            <artifactId>nv-websocket-client</artifactId>
-            <version>2.14</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.16.5-R0.1-SNAPSHOT</version>
@@ -88,9 +82,9 @@
 
         <!-- This dependency is required for proper Websocket support -->
         <dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>1.5.2</version>
+            <groupId>com.neovisionaries</groupId>
+            <artifactId>nv-websocket-client</artifactId>
+            <version>2.14</version>
         </dependency>
 
         <!-- Nullable Support -->
@@ -119,13 +113,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
-        </dependency>
-
-        <!-- Websocket Implementation; https://github.com/TooTallNate/Java-WebSocket -->
-        <dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>1.5.2</version>
         </dependency>
     </dependencies>
 </project>
