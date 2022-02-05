@@ -4,6 +4,7 @@ import com.neovisionaries.ws.client.WebSocketException;
 import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.api.MCSVAPI;
+import kr.mcsv.client.scheduler.MCSVReportScheduler;
 import kr.mcsv.client.utils.MCSVUtils;
 import kr.mcsv.client.websocket.MCSVWebsocketSession;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +27,9 @@ import java.util.Random;
 public class MCSVServer {
     private String serverId = null;
     private MCSVWebsocketSession session;
+    private MCSVReportScheduler reportScheduler;
+
+    private boolean isStartedUp = false;
 
     public MCSVServer(@Nullable String serverId) {
         this.serverId = serverId;
@@ -64,8 +68,11 @@ public class MCSVServer {
             JSONObject responseJson = response.toJson();
 
             String serverId = (String) responseJson.get("uid");
-            return new MCSVServer(serverId);
-        } catch(IOException | ParseException | InvalidRefreshTokenException e) {
+            MCSVServer server = new MCSVServer(serverId);
+
+            server.start();
+            return server;
+        } catch(IOException | ParseException | InvalidRefreshTokenException | WebSocketException e) {
 
             return null;
         }
@@ -73,12 +80,25 @@ public class MCSVServer {
 
     /* = startup/shutdown = */
     public void start() throws InvalidRefreshTokenException, WebSocketException, IOException {
+        if (this.isRegistered() && this.getServerId() != null) return;
         if (session == null) session = new MCSVWebsocketSession(this);
+        if (reportScheduler == null) reportScheduler = new MCSVReportScheduler(this);
+
         session.connect();
+        reportScheduler.start();
+
+        this.reportServerStartup();
+        this.isStartedUp = true;
     }
 
     public void stop() {
+        if (!this.isStartedUp) return;
 
+        this.reportServerShutdown();
+        if (session != null) session.disconnect();
+        if (reportScheduler != null) reportScheduler.stop();
+
+        this.isStartedUp = false;
     }
 
     /* = Setter/Getter = */
@@ -114,6 +134,10 @@ public class MCSVServer {
     /* = Configuration = */
     public void importConfig(YamlConfiguration config) {
         this.serverId = config.getString("server.id", null);
+
+        try {
+            this.start();
+        } catch (Exception e) {}
     }
 
     public void exportConfig(YamlConfiguration config) {

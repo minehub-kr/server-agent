@@ -7,14 +7,13 @@ import kr.mcsv.client.authorization.MCSVAuthorization;
 import kr.mcsv.client.core.MCSVCore;
 import kr.mcsv.client.server.MCSVServer;
 import org.jetbrains.annotations.Nullable;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
 public class MCSVWebsocketSession {
-    private boolean isConnected = false;
-
     WebSocket ws;
     WebSocketAdapter adapter = null;
 
@@ -47,10 +46,23 @@ public class MCSVWebsocketSession {
 
         ws.connect();
         this.ws = ws;
+
         return this.ws;
+    }
+
+    public void disconnect() {
+        ws.disconnect();
     }
 
     public boolean isConnected() {
         return this.ws != null && this.ws.isOpen();
+    }
+
+    public void sendMessage(String content) {
+        ws.sendText(content);
+    }
+
+    public void sendMessage(JSONObject json) {
+        this.sendMessage(json.toJSONString());
     }
 }

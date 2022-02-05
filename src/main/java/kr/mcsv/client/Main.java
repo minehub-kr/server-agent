@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public final class Main extends JavaPlugin {
-    protected static JavaPlugin plugin;
+    public static JavaPlugin plugin;
 
     public static String version = "";
     public static FileConfiguration config;
@@ -30,7 +30,7 @@ public final class Main extends JavaPlugin {
         plugin = this;
         version = this.getDescription().getVersion();
 
-        System.setProperty("http.agent", "mcsv/"+version);
+        System.setProperty("http.agent", "mcsv-client/"+version);
 
         // Plugin startup logic
         logger = Bukkit.getLogger();
@@ -61,18 +61,19 @@ public final class Main extends JavaPlugin {
         core.authorization.setScope(MCSVAuthorizationDefault.clientScope);
 
         if (core.authorization.isAuthorized()) {
-            if (core.server != null && core.server.isRegistered()) {
+            if (core.server != null)
                 new Thread((Runnable) () -> {
-                    core.server.reportServerStartup();
+                    try {
+                        core.server.start();
+                    } catch(Exception e) {};
                 }).start();
-            }
         }
     }
 
     @Override
     public void onDisable() {
         logger.info("reporting mcsv.kr platform about server shutdown...");
-        core.server.reportServerShutdown();
+        core.server.stop();
 
         logger.info("mcsv.kr client is shutting down...");
     }
