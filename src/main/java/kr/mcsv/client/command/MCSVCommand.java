@@ -5,6 +5,7 @@ import com.stella_it.meiling.MeilingAuthorizationMethod;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.api.MCSVAPI;
 import kr.mcsv.client.server.MCSVServer;
+import kr.mcsv.client.utils.MCSVJSONUtils;
 import kr.mcsv.client.utils.MCSVLowLevelUtils;
 import kr.mcsv.client.utils.MCSVUtils;
 import org.bukkit.ChatColor;
@@ -288,7 +289,7 @@ public class MCSVCommand {
         String commandDetect = command.toLowerCase();
         switch(commandDetect) {
             case "metadata":
-                sender.sendMessage(MCSVUtils.createMetadataJSON().toJSONString());
+                sender.sendMessage(MCSVJSONUtils.createMetadataJSON().toJSONString());
                 break;
             case "env":
                 sender.sendMessage(MCSVLowLevelUtils.rawSystemEnvironmentJSON().toJSONString());

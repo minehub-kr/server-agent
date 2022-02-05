@@ -34,7 +34,9 @@ public class MCSVReportScheduler {
     public void runJob() {
         // add jobs here
 
-
+        if (server != null) {
+            server.updateMetadata();
+        }
     }
 
 

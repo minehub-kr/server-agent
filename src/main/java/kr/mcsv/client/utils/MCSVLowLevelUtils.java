@@ -34,13 +34,13 @@ public class MCSVLowLevelUtils {
             result.put((String) x.getKey(), (String) x.getValue());
         }
 
-        return MCSVUtils.convertHashmapWithObjectKeysToJSON(result);
+        return MCSVJSONUtils.convertHashmapWithObjectKeysToJSON(result);
     }
 
     public static JSONObject rawSystemEnvironmentJSON() {
         Map<String, String> envs = System.getenv();
 
-        return MCSVUtils.convertHashmapWithObjectKeysToJSON(envs);
+        return MCSVJSONUtils.convertHashmapWithObjectKeysToJSON(envs);
     }
 
     public static JSONObject dumpSystemInfo() {
@@ -56,7 +56,7 @@ public class MCSVLowLevelUtils {
             JSONObject result = (JSONObject) parser.parse(jsonInString);
             json.put("hardware", result);
 
-            JSONObject osJson = MCSVUtils.createOSMetadataJSON();
+            JSONObject osJson = MCSVJSONUtils.createOSMetadataJSON();
             jsonInString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(os.getVersionInfo());
             result = (JSONObject) parser.parse(jsonInString);
             osJson.put("version", result);

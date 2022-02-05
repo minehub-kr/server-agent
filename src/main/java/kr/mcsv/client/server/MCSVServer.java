@@ -5,6 +5,7 @@ import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.api.MCSVAPI;
 import kr.mcsv.client.scheduler.MCSVReportScheduler;
+import kr.mcsv.client.utils.MCSVJSONUtils;
 import kr.mcsv.client.utils.MCSVUtils;
 import kr.mcsv.client.websocket.MCSVWebsocketSession;
 import org.jetbrains.annotations.Nullable;
@@ -119,7 +120,7 @@ public class MCSVServer {
 
     /* = API Calls = */
     public boolean reportServerStartup() {
-        return MCSVAPI.reportServerStartup(Main.core.authorization, this.serverId, MCSVUtils.createServerStartupJSON());
+        return MCSVAPI.reportServerStartup(Main.core.authorization, this.serverId, MCSVJSONUtils.createServerStartupJSON());
     }
 
     public boolean reportServerShutdown() {
@@ -127,7 +128,7 @@ public class MCSVServer {
     }
 
     public boolean updateMetadata() {
-        return MCSVAPI.reportMetadata(Main.core.authorization, this.serverId, MCSVUtils.createMetadataJSON());
+        return MCSVAPI.reportMetadata(Main.core.authorization, this.serverId, MCSVJSONUtils.createMetadataJSON());
     }
 
 
