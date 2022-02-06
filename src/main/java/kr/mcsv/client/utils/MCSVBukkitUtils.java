@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 
 public class MCSVBukkitUtils {
-    public static JSONObject getPlayerData(Player player) {
+    public static JSONObject getPlayerJSON(Player player) {
         JSONObject json = new JSONObject();
         json.put("uuid", player.getUniqueId());
         json.put("name", player.getName());
