@@ -12,6 +12,19 @@ public class MCSVWebsocketHandler {
 
     public JSONObject processWebsocket(JSONObject json) {
         JSONObject response = new JSONObject();
+        String actionStr;
+
+        if (!json.containsKey("action")) return response;
+        actionStr = (String) json.get("action");
+
+        MCSVWebsocketActions action = MCSVWebsocketActions.getActionByName(actionStr);
+        if (action == MCSVWebsocketActions.PING) {
+            response.put("action", action);
+            response.put("data", "pong");
+        } else {
+            response.put("action", actionStr);
+            response.put("error", "invalid_action");
+        }
 
         return response;
     }

@@ -81,7 +81,7 @@ public class MCSVServer {
 
     /* = startup/shutdown = */
     public void start() throws InvalidRefreshTokenException, WebSocketException, IOException {
-        if (this.isRegistered() && this.getServerId() != null) return;
+        if (!this.isRegistered() || this.getServerId() == null) return;
         if (session == null) session = new MCSVWebsocketSession(this);
         if (reportScheduler == null) reportScheduler = new MCSVReportScheduler(this);
 

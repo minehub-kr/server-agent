@@ -1,6 +1,7 @@
 package kr.mcsv.client.websocket;
 
 public enum MCSVWebsocketActions {
+    PING("ping"),
     RUN_COMMAND("run_command"),
     RUN_SHELL_COMMAND("run_shell_command"),
     GET_SERVER_METADATA("get_server_metadata"),
@@ -22,5 +23,10 @@ public enum MCSVWebsocketActions {
         }
 
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
