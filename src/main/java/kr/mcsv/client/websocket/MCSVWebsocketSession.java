@@ -29,10 +29,10 @@ public class MCSVWebsocketSession {
         if (this.ws == null) {
             WebSocketFactory factory = new WebSocketFactory();
 
-            URI wsURI = URI.create("wss://api.mcsv.kr/servers/"+this.server.getServerId()+"/ws");
+            URI wsURI = URI.create("wss://api.mcsv.kr/servers/"+this.server.getServerId()+"/ws/server");
             factory.setServerName(wsURI.getHost());
 
-            ws = factory.createSocket("wss://localhost/endpoint");
+            ws = factory.createSocket(wsURI);
         } else {
             ws = this.ws.recreate();
         }
@@ -43,6 +43,7 @@ public class MCSVWebsocketSession {
 
         ws.addHeader("Authorization", "Bearer "+ Main.core.authorization.getAccessToken());
         ws.addListener(this.adapter);
+        ws.setPingInterval(20 * 1000);
 
         ws.connect();
         this.ws = ws;

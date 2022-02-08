@@ -88,8 +88,8 @@ public class MCSVServer {
         session.connect();
         reportScheduler.start();
 
-        this.reportServerStartup();
         this.isStartedUp = true;
+        this.reportServerStartup();
     }
 
     public void stop() {
