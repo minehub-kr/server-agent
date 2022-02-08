@@ -42,6 +42,8 @@ public class MCSVServer {
     }
 
     public static MCSVServer createServer(@Nullable String name) {
+
+        Main.logger.info("MCSV Platform에 서버를 등록하는 중...");
         JSONObject json = new JSONObject();
 
         if (name == null) {
@@ -70,6 +72,8 @@ public class MCSVServer {
 
             String serverId = (String) responseJson.get("uid");
             MCSVServer server = new MCSVServer(serverId);
+
+            Main.logger.info("MCSV Platform에 서버를 등록 성공! ID: "+serverId);
 
             server.start();
             return server;
