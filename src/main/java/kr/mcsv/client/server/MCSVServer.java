@@ -73,12 +73,12 @@ public class MCSVServer {
             String serverId = (String) responseJson.get("uid");
             MCSVServer server = new MCSVServer(serverId);
 
-            Main.logger.info("MCSV Platform에 서버를 등록 성공! ID: "+serverId);
+            Main.logger.info("MCSV Platform에 이 서버를 등록 완료하였습니다! ID: "+serverId);
 
             server.start();
             return server;
         } catch(IOException | ParseException | InvalidRefreshTokenException | WebSocketException e) {
-
+            e.printStackTrace();
             return null;
         }
     }
@@ -112,7 +112,9 @@ public class MCSVServer {
         List<String> servers = MCSVAPI.getServers(Main.core.authorization, this.serverId);
 
         if (servers == null) return true;
-        if (servers.contains(this.serverId)) return true;
+        for (String server : servers) {
+            if (server.equalsIgnoreCase(this.serverId)) return true;
+        }
 
         return false;
     }

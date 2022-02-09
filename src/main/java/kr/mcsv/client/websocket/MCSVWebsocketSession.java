@@ -29,7 +29,7 @@ public class MCSVWebsocketSession {
         if (this.ws == null) {
             WebSocketFactory factory = new WebSocketFactory();
 
-            URI wsURI = URI.create("wss://api.mcsv.kr/servers/"+this.server.getServerId()+"/ws/server");
+            URI wsURI = URI.create("wss://api.mcsv.kr/v1/servers/"+this.server.getServerId()+"/ws/server");
             factory.setServerName(wsURI.getHost());
 
             ws = factory.createSocket(wsURI);

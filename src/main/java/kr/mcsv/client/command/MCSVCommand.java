@@ -138,6 +138,16 @@ public class MCSVCommand {
                 }
             }
 
+            if (MCSVCommand.hasPermission(sender, "getServerId")) {
+                String header = ChatColor.RESET + "서버 아이디: ";
+
+                if (Main.core.server.getServerId() != null) {
+                    sender.sendMessage(header+ChatColor.GREEN+Main.core.server.getServerId());
+                } else {
+                    sender.sendMessage(header+ChatColor.RED+"미 발급");
+                }
+            }
+
             sender.sendMessage(MCSVUtils.getCopyrightString());
         } else {
             sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
@@ -293,6 +303,7 @@ public class MCSVCommand {
                 break;
             case "env":
                 sender.sendMessage(MCSVLowLevelUtils.rawSystemEnvironmentJSON().toJSONString());
+                break;
         }
 
 
