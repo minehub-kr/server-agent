@@ -34,8 +34,9 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
             if (reqJson.get("from") == null) return;
 
             to = (String) reqJson.get("from");
+            JSONObject requestPayload = (JSONObject) reqJson.get("payload");
 
-            JSONObject payload = this.handler.processWebsocket(reqJson);
+            JSONObject payload = this.handler.processWebsocket(requestPayload);
             JSONObject json = new JSONObject();
             json.put("from", "server");
             json.put("to", to);
