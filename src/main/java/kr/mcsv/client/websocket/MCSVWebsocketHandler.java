@@ -4,6 +4,8 @@ import kr.mcsv.client.Main;
 import kr.mcsv.client.server.MCSVServer;
 import kr.mcsv.client.websocket.command.MCSVWebsocketCommandDispatcher;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONObject;
@@ -34,6 +36,10 @@ public class MCSVWebsocketHandler {
             if (cmdline == null) throw new Exception("missing cmdline");
 
             MCSVWebsocketCommandDispatcher dispatcher = new MCSVWebsocketCommandDispatcher();
+            response.put("action", action);
+
+            // doing in spinlock way. :facepalm:
+            AtomicBoolean isCompleted = new AtomicBoolean(false);
             
             // All bukkit related stuff should be run synchronously.
             BukkitTask task = Bukkit.getScheduler().runTask(Main.plugin, () -> {
@@ -41,13 +47,15 @@ public class MCSVWebsocketHandler {
 
                 JSONObject responseData = new JSONObject();
                 responseData.put("output", dispatcher.getOutput());
-    
-                response.put("action", action);
                 response.put("data", responseData);
+
+                isCompleted.set(true);
             });
 
-            // wait until synchronous bukkit task ends.
-            task.wait();
+            while (!isCompleted.get()) {
+                // This would be ok right?
+                Thread.sleep(100);
+            }
         } else {
             response.put("action", actionStr);
             response.put("error", "invalid_action");
