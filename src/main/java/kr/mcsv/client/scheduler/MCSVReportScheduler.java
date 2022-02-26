@@ -49,6 +49,7 @@ public class MCSVReportScheduler {
                     try {
                         session.connect();
                     } catch (Exception e) {
+                        
                     }
                 }
             }

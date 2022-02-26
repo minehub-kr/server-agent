@@ -6,7 +6,6 @@ import kr.mcsv.client.Main;
 import kr.mcsv.client.api.MCSVAPI;
 import kr.mcsv.client.scheduler.MCSVReportScheduler;
 import kr.mcsv.client.utils.MCSVJSONUtils;
-import kr.mcsv.client.utils.MCSVUtils;
 import kr.mcsv.client.websocket.MCSVWebsocketSession;
 import org.jetbrains.annotations.Nullable;
 import kr.mcsv.client.core.MCSVCore;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 

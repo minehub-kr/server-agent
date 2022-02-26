@@ -4,6 +4,7 @@ import com.stella_it.meiling.InvalidRefreshTokenException;
 import com.stella_it.meiling.MeilingAuthorizationMethod;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.api.MCSVAPI;
+import kr.mcsv.client.log.MCSVLogTemplate;
 import kr.mcsv.client.server.MCSVServer;
 import kr.mcsv.client.utils.MCSVJSONUtils;
 import kr.mcsv.client.utils.MCSVLowLevelUtils;
@@ -51,7 +52,7 @@ public class MCSVCommand {
                 MCSVCommandAction action = MCSVCommandAction.getAction(args[0]);
                 if (action == null) {
                     sender.sendMessage(
-                            ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "올바르지 않은 명령입니다."
+                        MCSVLogTemplate.error("올바르지 않은 명령입니다.")
                     );
                     return true;
                 }
@@ -74,7 +75,7 @@ public class MCSVCommand {
                             String authorizationCode = args[1];
                             return authorizeUsingAuthcode(sender, authorizationCode);
                         } else {
-                            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 인수입니다.");
+                            sender.sendMessage(MCSVLogTemplate.error("올바르지 않은 인수입니다."));
                         }
                     }
                         break;
@@ -87,10 +88,10 @@ public class MCSVCommand {
                     case HELP:
                     default:
                         sender.sendMessage(
-                                ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 버전: " + Main.version
+                            MCSVLogTemplate.log("MCSV.KR 클라이언트 - 버전: " + Main.version)
                         );
                         sender.sendMessage(
-                                MCSVCommandAction.getAllManual(sender, "mcsv", "")
+                            MCSVCommandAction.getAllManual(sender, "mcsv", "")
                         );
                         return true;
                 }
@@ -106,13 +107,13 @@ public class MCSVCommand {
     private static boolean sendMCSVInfo(CommandSender sender) {
         if (MCSVCommand.hasPermission(sender, "info")) {
             sender.sendMessage(
-                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 버전: " + Main.version
+                MCSVLogTemplate.log("MCSV.KR 클라이언트 - 버전: " + Main.version)
             );
 
 
             if (!MCSVAPI.checkOnline()) {
                 sender.sendMessage(
-                        ChatColor.RED + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다."
+                    MCSVLogTemplate.error("MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다.")
                 );
 
                 return true;
@@ -150,7 +151,7 @@ public class MCSVCommand {
 
             sender.sendMessage(MCSVUtils.getCopyrightString());
         } else {
-            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
+            sender.sendMessage(MCSVLogTemplate.error("에러: 권한이 없습니다."));
         }
 
         return true;
@@ -166,11 +167,11 @@ public class MCSVCommand {
             }
 
             sender.sendMessage(
-                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 로그인"
+                MCSVLogTemplate.log("MCSV.KR 클라이언트 - 로그인")
             );
 
             sender.sendMessage(
-                    "아래 링크로 이동해, 인증을 진행해 주세요."
+                "아래 링크로 이동해, 인증을 진행해 주세요."
             );
 
             sender.sendMessage(
@@ -181,7 +182,7 @@ public class MCSVCommand {
             sender.sendMessage("로그인을 진행 한 후, 코드를 복사해 명령어(/mcsv login 코드)를 실행 해 주세요.");
 
         } else {
-            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
+            sender.sendMessage(MCSVLogTemplate.error("권한이 없습니다."));
         }
 
         return true;
@@ -191,25 +192,25 @@ public class MCSVCommand {
     private static boolean showToken(CommandSender sender) {
         if (MCSVCommand.hasPermission(sender, "token")) {
             if (!Main.core.authorization.isAuthorized()) {
-                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"로그인 되어있지 않습니다!");
+                sender.sendMessage(MCSVLogTemplate.error("에러: 로그인 되어있지 않습니다!"));
                 return true;
             }
 
             sender.sendMessage(
-                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 클라이언트 - 토큰 조회"
+                MCSVLogTemplate.log("MCSV.KR 클라이언트 - 토큰 조회")
             );
 
             try {
                 sender.sendMessage("Access Token: "+Main.core.authorization.getAccessToken());
                 sender.sendMessage("Refresh Token: "+Main.core.authorization.getRefreshToken());
             } catch (InvalidRefreshTokenException e) {
-                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"토큰 갱신에 실패했습니다!");
+                sender.sendMessage(MCSVLogTemplate.error("토큰 갱신에 실패했습니다!"));
                 return true;
             }
-            sender.sendMessage(ChatColor.GOLD+"[경고] "+ChatColor.RESET+"이 토큰을 절대 제3자에게 노출해서는 절대 안 됩니다!");
+            sender.sendMessage(MCSVLogTemplate.warn("경고: 이 토큰을 절대 제3자에게 노출해서는 절대 안 됩니다!"));
 
         } else {
-            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
+            sender.sendMessage(MCSVLogTemplate.error("에러: 권한이 없습니다."));
         }
 
         return true;
@@ -220,31 +221,31 @@ public class MCSVCommand {
         if (MCSVCommand.hasPermission(sender, "login")) {
             if (!MCSVAPI.checkOnline()) {
                 sender.sendMessage(
-                        ChatColor.RED + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다."
+                       MCSVLogTemplate.error("에러: MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다.")
                 );
 
                 return true;
             }
 
             sender.sendMessage(
-                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증서버와 통신을 시작합니다"
+                    MCSVLogTemplate.log("인증서버와 통신을 시작합니다")
             );
 
             boolean authSuccess = Main.core.authorization.authorize(MeilingAuthorizationMethod.AUTHORIZATION_CODE, code);
 
             if (!authSuccess) {
-                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"올바르지 않은 코드이거나, 만료된 코드입니다. 처음부터 인증을 다시 시작하세요.");
+                sender.sendMessage(MCSVLogTemplate.error("에러: 올바르지 않은 코드이거나, 만료된 코드입니다. 처음부터 인증을 다시 시작하세요."));
                 return true;
             }
 
             sender.sendMessage(
-                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "인증에 성공했습니다."
+                    MCSVLogTemplate.log("인증에 성공했습니다.")
             );
             Main.core.save();
 
             return true;
         } else {
-            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
+            sender.sendMessage(MCSVLogTemplate.error("에러: 권한이 없습니다."));
         }
 
         return true;
@@ -254,22 +255,22 @@ public class MCSVCommand {
         if (MCSVCommand.hasPermission(sender, "setup")) {
             if (!MCSVAPI.checkOnline()) {
                 sender.sendMessage(
-                        ChatColor.RED + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다."
+                        MCSVLogTemplate.error("에러: MCSV.KR 플랫폼이 점검 중 이거나, 서버가 온라인이 아닙니다.")
                 );
 
                 return true;
             }
 
             sender.sendMessage(
-                    ChatColor.GREEN + "[MCSV] " + ChatColor.RESET + "MCSV.KR 플랫폼 중앙 서버에 서버 등록을 위한 통신을 시작합니다"
+                    MCSVLogTemplate.log("MCSV.KR 플랫폼 중앙 서버에 서버 등록을 위한 통신을 시작합니다")
             );
 
             if (!Main.core.authorization.isAuthorized()) {
-                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"로그인 되어있지 않습니다!");
+                sender.sendMessage(MCSVLogTemplate.error("에러: 로그인 되어있지 않습니다!"));
                 return true;
             } else if (!forceRegister && Main.core.server.isRegistered()) {
-                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"이미 이 서버는 등록되어 있습니다!");
-                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"강제로 새로 등록하려면, "+ChatColor.GREEN+"/mcsv setup confirm"+ChatColor.RESET+" 을 대신 실행하세요.");
+                sender.sendMessage(MCSVLogTemplate.error("에러: 이미 이 서버는 등록되어 있습니다!"));
+                sender.sendMessage(MCSVLogTemplate.error("에러: 강제로 새로 등록하려면, "+ChatColor.GREEN+"/mcsv setup confirm"+ChatColor.RESET+" 명령어를 대신 실행하세요."));
                 return true;
             }
 
@@ -277,22 +278,22 @@ public class MCSVCommand {
             boolean success = Main.core.registerServer();
 
             if (!success) {
-                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"서버 등록에 실패 했습니다! 다시 시도 하세요.");
+                sender.sendMessage(MCSVLogTemplate.error("에러: 서버 등록에 실패 했습니다! 다시 시도 하세요."));
                 return true;
             }
 
             Main.core.save();
-            sender.sendMessage(ChatColor.GREEN+"[등록] "+ChatColor.RESET+"서버 등록에 성공했습니다.");
+            sender.sendMessage(MCSVLogTemplate.log("서버 등록에 성공했습니다."));
 
         } else {
-            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"권한이 없습니다.");
+            sender.sendMessage(MCSVLogTemplate.error("권한이 없습니다."));
         }
         return true;
     }
 
     public static boolean runDebug(CommandSender sender, @Nullable String command) {
         if (command == null) {
-            sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"Debug 명령어가 감지되지 않았습니다.");
+            sender.sendMessage(MCSVLogTemplate.error("에러 - Debug 명령어가 감지되지 않았습니다."));
             return true;
         }
 

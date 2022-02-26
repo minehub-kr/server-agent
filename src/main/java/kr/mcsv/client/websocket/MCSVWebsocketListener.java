@@ -4,6 +4,8 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketFrame;
 import kr.mcsv.client.core.MCSVCore;
+import kr.mcsv.client.log.MCSVLogTemplate;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.json.simple.JSONObject;
@@ -25,7 +27,7 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
         super.onTextMessage(websocket, text);
         String to = null;
 
-        Bukkit.getLogger().info(""+ChatColor.GREEN+ChatColor.BOLD+"[MCSV]"+ChatColor.RESET+" Got Message: "+text);
+        Bukkit.getLogger().info(MCSVLogTemplate.log("Got Message: "+text));
 
         try {
             JSONParser parser = new JSONParser();
@@ -68,7 +70,7 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
     public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
         try {
             // Reconnect!
-            Bukkit.getLogger().info(""+ChatColor.GREEN+ChatColor.BOLD+"[MCSV]"+ChatColor.RESET+" MCSV.KR 서버와의 웹소켓 통신이 끊겼습니다. 다시 연결을 시도합니다.");
+            Bukkit.getLogger().info(MCSVLogTemplate.warn("MCSV.KR 서버와의 웹소켓 통신이 끊겼습니다. 다시 연결을 시도합니다."));
             session.connect();
         } catch(Exception e) {}
 
