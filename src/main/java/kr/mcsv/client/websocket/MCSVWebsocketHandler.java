@@ -2,12 +2,17 @@ package kr.mcsv.client.websocket;
 
 import kr.mcsv.client.Main;
 import kr.mcsv.client.server.MCSVServer;
+import kr.mcsv.client.utils.MCSVBukkitUtils;
+import kr.mcsv.client.utils.MCSVJSONUtils;
 import kr.mcsv.client.websocket.command.MCSVWebsocketCommandDispatcher;
 
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class MCSVWebsocketHandler {
@@ -56,6 +61,18 @@ public class MCSVWebsocketHandler {
                 // This would be ok right?
                 Thread.sleep(100);
             }
+        } else if (action == MCSVWebsocketActions.GET_PLAYERS) {
+            JSONArray playerArray = new JSONArray();
+
+            Iterator<? extends Player> playerIterator = Bukkit.getOnlinePlayers().iterator();
+
+            while (playerIterator.hasNext()) {
+                Player player = (Player) playerIterator.next();
+                JSONObject playerJson = MCSVBukkitUtils.getPlayerJSON(player);
+                playerArray.add(playerJson);
+            }
+
+            response.put("data", playerArray);
         } else {
             response.put("error", "invalid_action");
         }
