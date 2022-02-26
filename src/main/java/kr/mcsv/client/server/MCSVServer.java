@@ -5,6 +5,7 @@ import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.api.MCSVAPI;
 import kr.mcsv.client.scheduler.MCSVReportScheduler;
+import kr.mcsv.client.scheduler.MCSVWebsocketWatchdog;
 import kr.mcsv.client.utils.MCSVJSONUtils;
 import kr.mcsv.client.websocket.MCSVWebsocketSession;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,7 @@ public class MCSVServer {
     private String serverId = null;
     private MCSVWebsocketSession session;
     private MCSVReportScheduler reportScheduler;
+    private MCSVWebsocketWatchdog wsWatchdog;
 
     private boolean isStartedUp = false;
 
@@ -86,9 +88,11 @@ public class MCSVServer {
         if (!this.isRegistered() || this.getServerId() == null) return;
         if (session == null) session = new MCSVWebsocketSession(this);
         if (reportScheduler == null) reportScheduler = new MCSVReportScheduler(this);
+        if (wsWatchdog == null) wsWatchdog = new MCSVWebsocketWatchdog(this);
 
         session.connect();
         reportScheduler.start();
+        wsWatchdog.start();
 
         this.isStartedUp = true;
         this.reportServerStartup();
@@ -100,6 +104,7 @@ public class MCSVServer {
         this.reportServerShutdown();
         if (session != null) session.disconnect();
         if (reportScheduler != null) reportScheduler.stop();
+        if (wsWatchdog != null) wsWatchdog.stop();
 
         this.isStartedUp = false;
     }
