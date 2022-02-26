@@ -33,8 +33,6 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
         super.onTextMessage(websocket, text);
         String to = null;
 
-        Bukkit.getLogger().info(MCSVLogTemplate.log("Got Message: "+text));
-
         try {
             JSONParser parser = new JSONParser();
             JSONObject reqJson = (JSONObject) parser.parse(text);
@@ -51,8 +49,6 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
             json.put("payload", payload);
 
             String response = json.toJSONString();
-            Bukkit.getLogger().info(MCSVLogTemplate.log("Sending: "+ response));
-
             websocket.sendText(response);
             return;
         } catch (ParseException e) {
