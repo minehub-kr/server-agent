@@ -44,7 +44,10 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
             json.put("to", to);
             json.put("payload", payload);
 
-            websocket.sendText(json.toJSONString());
+            String response = json.toJSONString();
+            Bukkit.getLogger().info(MCSVLogTemplate.log("Sending: "+ response));
+
+            websocket.sendText(response);
             return;
         } catch (ParseException e) {
             return;
