@@ -68,7 +68,8 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
     public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
         try {
             // Reconnect!
-            session.ws.connect();
+            Bukkit.getLogger().info(""+ChatColor.GREEN+ChatColor.BOLD+"[MCSV]"+ChatColor.RESET+" MCSV.KR 서버와의 웹소켓 통신이 끊겼습니다. 다시 연결을 시도합니다.");
+            session.connect();
         } catch(Exception e) {}
 
         super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);

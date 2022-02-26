@@ -123,6 +123,9 @@ public class MCSVServer {
         return this.serverId;
     }
 
+    public MCSVWebsocketSession getWebsocketSession() {
+        return this.session;
+    }
 
     /* = API Calls = */
     public boolean reportServerStartup() {

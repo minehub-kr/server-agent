@@ -1,8 +1,13 @@
 package kr.mcsv.client.scheduler;
 
+import com.neovisionaries.ws.client.WebSocketException;
+import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.mcsv.client.Main;
 import kr.mcsv.client.server.MCSVServer;
+import kr.mcsv.client.websocket.MCSVWebsocketSession;
 import org.bukkit.Bukkit;
+
+import java.io.IOException;
 
 public class MCSVReportScheduler {
     private MCSVServer server;
@@ -36,6 +41,17 @@ public class MCSVReportScheduler {
 
         if (server != null) {
             server.updateMetadata();
+
+            MCSVWebsocketSession session = server.getWebsocketSession();
+
+            if (session != null) {
+                if (!session.isConnected()) {
+                    try {
+                        session.connect();
+                    } catch (Exception e) {
+                    }
+                }
+            }
         }
     }
 

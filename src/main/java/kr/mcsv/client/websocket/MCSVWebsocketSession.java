@@ -6,6 +6,7 @@ import kr.mcsv.client.Main;
 import kr.mcsv.client.authorization.MCSVAuthorization;
 import kr.mcsv.client.core.MCSVCore;
 import kr.mcsv.client.server.MCSVServer;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 
@@ -16,6 +17,9 @@ import java.util.List;
 public class MCSVWebsocketSession {
     WebSocket ws;
     WebSocketAdapter adapter = null;
+
+    int retryTimeout = 60;
+    static int retryTimeoutMax = 60;
 
     private MCSVServer server;
     public MCSVWebsocketSession(MCSVServer server) {
@@ -49,6 +53,10 @@ public class MCSVWebsocketSession {
         this.ws = ws;
 
         return this.ws;
+    }
+
+    public void retryConnect() {
+
     }
 
     public void disconnect() {
