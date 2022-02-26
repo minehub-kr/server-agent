@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 public class MCSVBukkitUtils {
     public static JSONObject getPlayerJSON(Player player) {
         JSONObject json = new JSONObject();
-        json.put("uuid", player.getUniqueId());
+        json.put("uuid", player.getUniqueId().toString());
         json.put("name", player.getName());
         json.put("ip", player.getAddress().toString());
         json.put("displayName", player.getDisplayName());
