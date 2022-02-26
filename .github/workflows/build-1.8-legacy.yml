@@ -1,17 +1,18 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Nightly Builds for Java 1.8
+name: Nightly Builds for Legacy Minecraft Versions
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - "legacy/**"
     paths:
       - "src/**/*.java"
       - "pom.xml"
       - ".github/workflows/*"
   pull_request:
-    branches: [ main ]
+      - "legacy/**"
     paths:
       - "src/**/*.java"
       - "pom.xml"
@@ -23,7 +24,7 @@ jobs:
 
     strategy:
       matrix:
-        mc-version: [1.16.5]
+        mc-version: [1.8.8, 1.12.2]
 
     steps:
       - uses: actions/checkout@v2
