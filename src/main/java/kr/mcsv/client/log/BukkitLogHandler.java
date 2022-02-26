@@ -1,2 +1,4 @@
-package kr.mcsv.client.log;public class BukkitLogHandler {
+package kr.mcsv.client.log;
+
+public class BukkitLogHandler {
 }

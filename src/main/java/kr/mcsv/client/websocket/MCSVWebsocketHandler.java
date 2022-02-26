@@ -1,6 +1,9 @@
 package kr.mcsv.client.websocket;
 
 import kr.mcsv.client.server.MCSVServer;
+import kr.mcsv.client.websocket.command.MCSVWebsocketCommandDispatcher;
+
+import org.bukkit.Bukkit;
 import org.json.simple.JSONObject;
 
 public class MCSVWebsocketHandler {
@@ -10,7 +13,7 @@ public class MCSVWebsocketHandler {
         this.session = session;
     }
 
-    public JSONObject processWebsocket(JSONObject json) {
+    public JSONObject processWebsocket(JSONObject json) throws Exception {
         JSONObject response = new JSONObject();
         String actionStr;
 
@@ -21,6 +24,21 @@ public class MCSVWebsocketHandler {
         if (action == MCSVWebsocketActions.PING) {
             response.put("action", action);
             response.put("data", "pong");
+        } else if (action == MCSVWebsocketActions.RUN_COMMAND) {
+            JSONObject data = (JSONObject) json.get("data");
+            if (data == null) throw new Exception("missing data field");
+
+            String cmdline = (String) data.get("cmdline");
+            if (cmdline == null) throw new Exception("missing cmdline");
+
+            MCSVWebsocketCommandDispatcher dispatcher = new MCSVWebsocketCommandDispatcher();
+            Bukkit.dispatchCommand(dispatcher, cmdline);
+
+            JSONObject responseData = new JSONObject();
+            responseData.put("output", dispatcher.getOutput());
+
+            response.put("action", action);
+            response.put("data", responseData);
         } else {
             response.put("action", actionStr);
             response.put("error", "invalid_action");
