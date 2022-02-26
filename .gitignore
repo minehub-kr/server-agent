@@ -111,3 +111,6 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+# version change detector
+pom.xml.bak

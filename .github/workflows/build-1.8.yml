@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        mc-version: [1.16.5]
+        mc-version: [1.8.8, 1.12.2, 1.16.5]
 
     steps:
       - uses: actions/checkout@v2
@@ -38,6 +38,9 @@ jobs:
           wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
           java -jar BuildTools.jar --rev ${{ matrix.mc-version }}
           cd ..
+      - name: Change target version to ${{ matrix.mc-version }}
+        run: |
+          ./.github/workflow-files/change-ver.sh ${{ matrix.mc-version }}
       - name: Build with Maven
         run: mvn package
       - name: Upload a Build Artifact
