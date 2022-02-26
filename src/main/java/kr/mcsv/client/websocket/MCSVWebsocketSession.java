@@ -30,16 +30,12 @@ public class MCSVWebsocketSession {
         if (this.isConnected()) return null;
         WebSocket ws;
 
-        if (this.ws == null) {
-            WebSocketFactory factory = new WebSocketFactory();
+        WebSocketFactory factory = new WebSocketFactory();
 
-            URI wsURI = URI.create("wss://api.mcsv.kr/v1/servers/"+this.server.getServerId()+"/ws/server");
-            factory.setServerName(wsURI.getHost());
+        URI wsURI = URI.create("wss://api.mcsv.kr/v1/servers/"+this.server.getServerId()+"/ws/server");
+        factory.setServerName(wsURI.getHost());
 
-            ws = factory.createSocket(wsURI);
-        } else {
-            ws = this.ws.recreate();
-        }
+        ws = factory.createSocket(wsURI);
 
         if (this.adapter == null) {
             this.adapter = new MCSVWebsocketListener(this);
