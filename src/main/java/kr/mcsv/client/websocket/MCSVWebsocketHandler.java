@@ -25,8 +25,9 @@ public class MCSVWebsocketHandler {
         actionStr = (String) json.get("action");
 
         MCSVWebsocketActions action = MCSVWebsocketActions.getActionByName(actionStr);
+        response.put("action", actionStr);
+
         if (action == MCSVWebsocketActions.PING) {
-            response.put("action", action);
             response.put("data", "pong");
         } else if (action == MCSVWebsocketActions.RUN_COMMAND) {
             JSONObject data = (JSONObject) json.get("data");
@@ -36,7 +37,6 @@ public class MCSVWebsocketHandler {
             if (cmdline == null) throw new Exception("missing cmdline");
 
             MCSVWebsocketCommandDispatcher dispatcher = new MCSVWebsocketCommandDispatcher();
-            response.put("action", action);
 
             // doing in spinlock way. :facepalm:
             AtomicBoolean isCompleted = new AtomicBoolean(false);
@@ -57,7 +57,6 @@ public class MCSVWebsocketHandler {
                 Thread.sleep(100);
             }
         } else {
-            response.put("action", actionStr);
             response.put("error", "invalid_action");
         }
 
