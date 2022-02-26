@@ -1,5 +1,8 @@
 package kr.mcsv.client.websocket;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketFrame;
@@ -75,7 +78,10 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
             // Reconnect!
             Bukkit.getLogger().info(MCSVLogTemplate.warn("MCSV.KR 서버와의 웹소켓 통신이 끊겼습니다. 다시 연결을 시도합니다."));
             session.connect();
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            Bukkit.getLogger().severe(MCSVLogTemplate.error("MCSV.KR 서버와의 웹소켓 통신을 다시 시작하는 도중 오류가 발생했습니다. 아래 스택트레이스를 확인하세요."));
+            e.printStackTrace();
+        }
 
         super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
     }
