@@ -135,25 +135,25 @@ public class MCSVWebsocketCommandDispatcher implements ConsoleCommandSender {
 
     @Override
     public void acceptConversationInput(String input) {
-        // TODO: Implement Converstaion later.
+        // TODO: Implement Conversation later.
         
     }
 
     @Override
     public boolean beginConversation(Conversation conversation) {
-        // TODO: Implement Converstaion later.
+        // TODO: Implement Conversation later.
         return false;
     }
 
     @Override
     public void abandonConversation(Conversation conversation) {
-        // TODO: Implement Converstaion later.
+        // TODO: Implement Conversation later.
         
     }
 
     @Override
     public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
-        // TODO: Implement Converstaion later.
+        // TODO: Implement Conversation later.
         
     }
 
