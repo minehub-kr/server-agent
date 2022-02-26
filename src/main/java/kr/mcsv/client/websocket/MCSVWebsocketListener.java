@@ -1,5 +1,7 @@
 package kr.mcsv.client.websocket;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -8,6 +10,7 @@ import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketFrame;
 import kr.mcsv.client.core.MCSVCore;
 import kr.mcsv.client.log.MCSVLogTemplate;
+import kr.mcsv.client.utils.MCSVJSONUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -62,7 +65,10 @@ public class MCSVWebsocketListener extends WebSocketAdapter {
 
                 JSONObject payload = new JSONObject();
                 json.put("error", "java_exception");
-                json.put("exception", e.getMessage());
+
+                JSONObject exception = MCSVJSONUtils.createExceptionJSON(e);
+
+                json.put("exception", exception);
 
                 json.put("payload", payload);
 

@@ -2,12 +2,28 @@ package kr.mcsv.client.utils;
 
 import org.json.simple.JSONObject;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 
 public class MCSVJSONUtils {
 
     public static JSONObject createMetadataJSON() {
         return MCSVJSONUtils.createMetadataJSON(false);
+    }
+
+    public static JSONObject createExceptionJSON(Exception e) {
+        JSONObject exception = new JSONObject();
+        exception.put("message", e.getMessage());
+        exception.put("localizedMessage", e.getLocalizedMessage());
+        exception.put("cause", e.getCause());
+
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+
+        exception.put("stacktrace", sw.toString());
+        return exception;
     }
 
     public static JSONObject createMetadataJSON(boolean includeRaw) {
