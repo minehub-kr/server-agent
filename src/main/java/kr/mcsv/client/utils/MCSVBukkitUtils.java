@@ -122,12 +122,6 @@ public class MCSVBukkitUtils {
         json.put("environment", getEnvironmentString(world.getEnvironment()));
         json.put("pvp", world.getPVP());
 
-        JSONArray gameRules = new JSONArray();
-        for (String gameRule: world.getGameRules()) {
-            gameRules.add(gameRule);
-        }
-        json.put("gameRules", gameRules);
-
         JSONObject spawnSettings = new JSONObject();
         spawnSettings.put("monsters", world.getAllowMonsters());
         spawnSettings.put("animals", world.getAllowAnimals());
