@@ -102,10 +102,12 @@ public class MCSVServer {
         if (!this.isStartedUp) return;
 
         this.reportServerShutdown();
+
+        // disable websocket watchdog and disconnect.
+        if (wsWatchdog != null) wsWatchdog.stop();
         if (session != null) session.disconnect();
         if (reportScheduler != null) reportScheduler.stop();
-        if (wsWatchdog != null) wsWatchdog.stop();
-
+        
         this.isStartedUp = false;
     }
 
