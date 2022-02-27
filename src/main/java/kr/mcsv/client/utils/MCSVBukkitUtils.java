@@ -35,7 +35,7 @@ public class MCSVBukkitUtils {
         JSONObject json = new JSONObject();
 
         json.put("server", getBukkitServerJSON());
-        json.put("plugisn", getBukkitPluginsJSON());
+        json.put("plugins", getBukkitPluginsJSON());
 
         return json;
     }
@@ -119,9 +119,14 @@ public class MCSVBukkitUtils {
         json.put("autosave", world.isAutoSave());
         json.put("spawnLoc", getLocationJSON(world.getSpawnLocation()));
         json.put("maxHeight", world.getMaxHeight());
-        json.put("gameRules", world.getGameRules());
         json.put("environment", getEnvironmentString(world.getEnvironment()));
         json.put("pvp", world.getPVP());
+
+        JSONArray gameRules = new JSONArray();
+        for (String gameRule: world.getGameRules()) {
+            gameRules.add(gameRule);
+        }
+        json.put("gameRules", gameRules);
 
         JSONObject spawnSettings = new JSONObject();
         spawnSettings.put("monsters", world.getAllowMonsters());
