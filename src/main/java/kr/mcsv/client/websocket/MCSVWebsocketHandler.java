@@ -73,6 +73,12 @@ public class MCSVWebsocketHandler {
             }
 
             response.put("data", playerArray);
+        } else if (action == MCSVWebsocketActions.GET_BUKKIT_VERSION) {
+            response.put("data", Bukkit.getBukkitVersion());
+        } else if (action == MCSVWebsocketActions.GET_PLUGIN_VERSION) {
+            response.put("data", Main.version);
+        } else if (action == MCSVWebsocketActions.GET_SERVER_METADATA) {
+            response.put("data", MCSVJSONUtils.createMetadataJSON());
         } else {
             response.put("error", "invalid_action");
         }
