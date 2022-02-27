@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        mc-version: [1.16.5]
+        mc-version: [1.13.2, 1.14.4, 1.15.2, 1.16.5]
 
     steps:
       - uses: actions/checkout@v2
