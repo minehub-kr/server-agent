@@ -5,11 +5,13 @@ import kr.mcsv.client.server.MCSVServer;
 import kr.mcsv.client.utils.MCSVBukkitUtils;
 import kr.mcsv.client.utils.MCSVJSONUtils;
 import kr.mcsv.client.websocket.command.MCSVWebsocketCommandDispatcher;
+import kr.mcsv.client.websocket.shell.MCSVShellRunner;
 
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONArray;
@@ -61,6 +63,24 @@ public class MCSVWebsocketHandler {
                 // This would be ok right?
                 Thread.sleep(100);
             }
+        } else if (action == MCSVWebsocketActions.RUN_SHELL_COMMAND) {
+            JSONObject data = (JSONObject) json.get("data");
+            if (data == null) throw new Exception("missing data field");
+
+            String cmdline = (String) data.get("cmdline");
+            if (cmdline == null) throw new Exception("missing cmdline");
+
+            MCSVShellRunner runner = new MCSVShellRunner(cmdline);
+            runner.run();
+
+            int exitVal = runner.getExitVal();
+            String output = runner.getOutput();
+
+            JSONObject responseData = new JSONObject();
+            responseData.put("output", output);
+            responseData.put("exit", exitVal);
+
+            response.put("data", responseData);
         } else if (action == MCSVWebsocketActions.GET_PLAYERS) {
             JSONArray playerArray = new JSONArray();
 
