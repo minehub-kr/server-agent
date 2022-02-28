@@ -49,19 +49,30 @@ public class MCSVJSONUtils {
     }
 
     public static JSONObject createServerInfoJSON(boolean includeRaw) {
-        JSONObject json = new JSONObject();
+        JSONObject json = createPerformanceJSON(includeRaw);
 
         json.put("os", createOSMetadataJSON());
-        json.put("java", createJavaMetadataJSON());
         json.put("process", createProcessMetadataJSON());
-        json.put("cpu", createCPUMetadataJSON());
-        json.put("memory", createMemoryMetadataJSON());
         json.put("hardware", createHardwareMetadataJSON());
         json.put("network", createNetworkMetadataJSON());
 
         if (includeRaw) {
             json.put("raw", createRAWMetadataJSON());
         }
+
+        return json;
+    }
+
+    public static JSONObject createPerformanceJSON() {
+        return createPerformanceJSON(false);
+    }
+
+    public static JSONObject createPerformanceJSON(boolean includeRaw) {
+        JSONObject json = new JSONObject();
+
+        json.put("java", createJavaMetadataJSON());
+        json.put("cpu", createCPUMetadataJSON());
+        json.put("memory", createMemoryMetadataJSON());
 
         return json;
     }

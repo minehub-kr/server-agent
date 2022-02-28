@@ -79,6 +79,8 @@ public class MCSVWebsocketHandler {
             response.put("data", Main.version);
         } else if (action == MCSVWebsocketActions.GET_SERVER_METADATA) {
             response.put("data", MCSVJSONUtils.createMetadataJSON());
+        } else if (action == MCSVWebsocketActions.GET_SERVER_PERFORMANCE) {
+            response.put("data", MCSVJSONUtils.createPerformanceJSON());
         } else if (action == MCSVWebsocketActions.GET_BUKKIT_INFO) {
             JSONObject bukkitInfo = MCSVBukkitUtils.getBukkitInfoJSON();
             response.put("data", bukkitInfo);
