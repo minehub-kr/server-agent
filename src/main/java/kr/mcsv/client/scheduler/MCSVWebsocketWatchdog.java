@@ -40,29 +40,31 @@ public class MCSVWebsocketWatchdog {
     public void runJob() {
         // add jobs here
 
-        if (server != null) {
-            MCSVWebsocketSession session = server.getWebsocketSession();
+        new Thread(() -> {    
+            if (server != null) {
+                MCSVWebsocketSession session = server.getWebsocketSession();
 
-            if (session != null) {
-                if (!session.isConnected()) {
-                    try {
-                        Bukkit.getLogger().warning(MCSVLogTemplate.warn(
-                            "WebsocketWatchdog: MCSV.KR 과 웹소켓 세션이 연결되어있지 않습니다. 연결을 재시도 합니다."
-                        ));
-                        session.connect();
-                        Bukkit.getLogger().info(MCSVLogTemplate.log(
-                            "WebsocketWatchdog: MCSV.KR 과 웹소켓 세션이 복구되었습니다."
-                        ));
-                    } catch (Exception e) {
-                        Bukkit.getLogger().severe(MCSVLogTemplate.error(
-                            "WebsocketWatchdog: MCSV.KR 과의 웹소켓 세션 복구 중 예외가 발생했습니다. 스택트레이스를 참조해 주세요."
-                        ));
+                if (session != null) {
+                    if (!session.isConnected()) {
+                        try {
+                            Bukkit.getLogger().warning(MCSVLogTemplate.warn(
+                                "WebsocketWatchdog: MCSV.KR 과 웹소켓 세션이 연결되어있지 않습니다. 연결을 재시도 합니다."
+                            ));
+                            session.connect();
+                            Bukkit.getLogger().info(MCSVLogTemplate.log(
+                                "WebsocketWatchdog: MCSV.KR 과 웹소켓 세션이 복구되었습니다."
+                            ));
+                        } catch (Exception e) {
+                            Bukkit.getLogger().severe(MCSVLogTemplate.error(
+                                "WebsocketWatchdog: MCSV.KR 과의 웹소켓 세션 복구 중 예외가 발생했습니다. 스택트레이스를 참조해 주세요."
+                            ));
 
-                        e.printStackTrace();
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
-        }
+        }).run();
     }
 
 

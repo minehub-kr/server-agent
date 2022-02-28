@@ -39,21 +39,11 @@ public class MCSVReportScheduler {
     public void runJob() {
         // add jobs here
 
-        if (server != null) {
-            server.updateMetadata();
-
-            MCSVWebsocketSession session = server.getWebsocketSession();
-
-            if (session != null) {
-                if (!session.isConnected()) {
-                    try {
-                        session.connect();
-                    } catch (Exception e) {
-                        
-                    }
-                }
+        new Thread(() -> {
+            if (server != null) {
+                server.updateMetadata();
             }
-        }
+        }).run();
     }
 
 
