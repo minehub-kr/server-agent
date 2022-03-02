@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class MCSVCore {
-    public static String mcsvAPI = "https://api.mcsv.kr";
+    public static String mcsvAPI = "https://api.minehub.kr";
 
     public MCSVAuthorization authorization;
     public MCSVServer server = null;
