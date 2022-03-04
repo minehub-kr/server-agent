@@ -119,6 +119,7 @@ public class MCSVBukkitUtils {
         json.put("autosave", world.isAutoSave());
         json.put("spawnLoc", getLocationJSON(world.getSpawnLocation()));
         json.put("maxHeight", world.getMaxHeight());
+        json.put("minHeight", world.getMinHeight());
         json.put("environment", getEnvironmentString(world.getEnvironment()));
         json.put("pvp", world.getPVP());
 
