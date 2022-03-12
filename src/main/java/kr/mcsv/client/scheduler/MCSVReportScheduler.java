@@ -19,6 +19,8 @@ public class MCSVReportScheduler {
     int syncInterval = 30;
 
     public void start() {
+        // This is now deprecated due to favor of event-driven reporting system.
+        /*
         if (this.scheduleId < 0) {
             this.scheduleId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                     Main.plugin,
@@ -27,23 +29,28 @@ public class MCSVReportScheduler {
                     },0,20 * syncInterval
             );
         }
+        */
     }
 
     public void stop() {
+        // This is now deprecated due to favor of event-driven reporting system.
+        /*
         if (this.scheduleId > 0) {
             Main.plugin.getServer().getScheduler().cancelTask(this.scheduleId);
             this.scheduleId = -1;
         }
+        */
     }
 
     public void runJob() {
         // add jobs here
-
+        /*
         new Thread(() -> {
             if (server != null) {
-                server.updateMetadata();
+                //server.updateMetadata();
             }
         }).run();
+        */
     }
 
 
