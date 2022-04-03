@@ -55,26 +55,12 @@ public final class Main extends JavaPlugin {
 
         core = new MCSVCore(null);
         core.setCredentialsFile(credentialsFile);
-        core.load();
-
-        core.authorization.setScope(MCSVAuthorizationDefault.clientScope);
-
-        if (core.authorization.isAuthorized()) {
-            if (core.server != null)
-                new Thread((Runnable) () -> {
-                    try {
-                        core.server.start();
-                    } catch(Exception e) {};
-                }).start();
-        }
+        core.start();
     }
 
     @Override
     public void onDisable() {
-        logger.info("reporting mcsv.kr platform about server shutdown...");
-        core.server.stop();
-
-        logger.info("mcsv.kr client is shutting down...");
+        core.stop();
     }
 
     private void migrateConfig(FileConfiguration config) throws IOException {

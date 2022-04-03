@@ -6,6 +6,8 @@ import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.mcsv.client.authorization.MCSVAuthorization;
 import kr.mcsv.client.authorization.MCSVAuthorizationDefault;
 import kr.mcsv.client.server.MCSVServer;
+
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -19,6 +21,28 @@ public class MCSVCore {
 
     public MCSVAuthorization authorization;
     public MCSVServer server = null;
+
+    private int scheduleId = -1;
+
+    public void registerSchedule() {
+        if (this.scheduleId < 0) {
+            this.scheduleId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+                Main.plugin,
+                (Runnable) () -> {
+                    this.updateCredentials();
+                }, 
+                0l,
+                20 * 60 * 30l
+            );
+        }
+    }
+
+    public void unregisterSchedule() {
+        if (this.scheduleId >= 0) {
+            Bukkit.getScheduler().cancelTask(this.scheduleId);
+            this.scheduleId = -1;
+        }
+    }
 
     private File credentialsFile = null;
     public MCSVCore(@Nullable String serverId) {
@@ -40,6 +64,31 @@ public class MCSVCore {
         this.credentialsFile = file;
     }
 
+    public void start() {
+        this.load();
+        this.authorization.setScope(MCSVAuthorizationDefault.clientScope);
+
+        if (this.authorization.isAuthorized()) {
+            if (this.server != null)
+                new Thread((Runnable) () -> {
+                    try {
+                        this.server.start();
+                    } catch(Exception e) {};
+                }).start();
+        }
+
+        this.registerSchedule();;
+    }
+
+    public void stop() {
+        if (this.server != null) {
+            Bukkit.getLogger().info("reporting mcsv.kr platform about server shutdown...");
+            this.server.stop();
+            Bukkit.getLogger().info("mcsv.kr client is shutting down...");
+        }
+
+        this.unregisterSchedule();
+    }
 
     public boolean load() {
         if (this.credentialsFile != null) {
@@ -91,5 +140,11 @@ public class MCSVCore {
         }
         this.server = server;
         return true;
+    }
+
+    public void updateCredentials() {
+        if (this.authorization != null && this.authorization.isAuthorized()) {
+            this.save();
+        }
     }
 }

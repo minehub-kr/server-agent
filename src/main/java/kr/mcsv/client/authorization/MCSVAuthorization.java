@@ -2,6 +2,7 @@ package kr.mcsv.client.authorization;
 
 import com.stella_it.meiling.*;
 import me.alex4386.gachon.network.common.http.HttpRequest;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +30,6 @@ public class MCSVAuthorization {
 
         this.client = new MeilingClient(clientId, clientSecret);
     }
-
     /* Authorization State */
     public boolean isAuthorized() {
         try {
