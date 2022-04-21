@@ -77,7 +77,7 @@ public class MCSVCore {
                 }).start();
         }
 
-        this.registerSchedule();;
+        this.registerSchedule();
     }
 
     public void stop() {

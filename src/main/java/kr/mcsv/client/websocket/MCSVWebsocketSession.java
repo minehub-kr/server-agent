@@ -21,6 +21,7 @@ public class MCSVWebsocketSession {
     int retryTimeout = 60;
     static int retryTimeoutMax = 60;
     boolean preventReconnect = false;
+    private boolean isConnecting = false;
 
     private MCSVServer server;
     public MCSVWebsocketSession(MCSVServer server) {
@@ -32,36 +33,44 @@ public class MCSVWebsocketSession {
     }
 
     public WebSocket connect() throws IOException, InvalidRefreshTokenException, WebSocketException {
-        if (this.isConnected()) return null;
-
-        // if prevent reconnect is activated, do not reconnect.
-        if (this.ws != null && !this.isConnected()) {
-            if (this.preventReconnect) {
-                return null;
+        this.isConnecting = true;
+        try {
+            if (this.isConnecting()) return null;
+            if (this.isConnected()) return null;
+            
+            // if prevent reconnect is activated, do not reconnect.
+            if (this.ws != null && !this.isConnected()) {
+                if (this.preventReconnect) {
+                    return null;
+                }
             }
+    
+            WebSocket ws;
+    
+            WebSocketFactory factory = new WebSocketFactory();
+    
+            URI wsURI = URI.create("wss://api.minehub.kr/v1/servers/"+this.server.getServerId()+"/ws/server");
+            factory.setServerName(wsURI.getHost());
+    
+            ws = factory.createSocket(wsURI);
+    
+            if (this.adapter == null) {
+                this.adapter = new MCSVWebsocketListener(this);
+            }
+    
+            ws.addHeader("Authorization", "Bearer "+ Main.core.authorization.getAccessToken());
+            ws.addListener(this.adapter);
+            ws.setPingInterval(20 * 1000);
+    
+            ws.connect();
+            this.ws = ws;
+    
+            return this.ws;
+        } catch(IOException | InvalidRefreshTokenException | WebSocketException e) {
+            this.isConnecting = false;
+            this.ws = null;
+            throw e;
         }
-
-        WebSocket ws;
-
-        WebSocketFactory factory = new WebSocketFactory();
-
-        URI wsURI = URI.create("wss://api.minehub.kr/v1/servers/"+this.server.getServerId()+"/ws/server");
-        factory.setServerName(wsURI.getHost());
-
-        ws = factory.createSocket(wsURI);
-
-        if (this.adapter == null) {
-            this.adapter = new MCSVWebsocketListener(this);
-        }
-
-        ws.addHeader("Authorization", "Bearer "+ Main.core.authorization.getAccessToken());
-        ws.addListener(this.adapter);
-        ws.setPingInterval(20 * 1000);
-
-        ws.connect();
-        this.ws = ws;
-
-        return this.ws;
     }
 
     public void retryConnect() {
@@ -75,6 +84,10 @@ public class MCSVWebsocketSession {
 
     public boolean isConnected() {
         return this.ws != null && this.ws.isOpen();
+    }
+
+    public boolean isConnecting() {
+        return !this.isConnected() && this.isConnecting;
     }
 
     public void sendMessage(String content) {
