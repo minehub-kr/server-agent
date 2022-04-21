@@ -45,7 +45,7 @@ public class MCSVWebsocketWatchdog {
                 MCSVWebsocketSession session = server.getWebsocketSession();
 
                 if (session != null) {
-                    if (!session.isConnected()) {
+                    if (!session.isConnected() && !session.isConnecting()) {
                         try {
                             Bukkit.getLogger().warning(MCSVLogTemplate.warn(
                                 "WebsocketWatchdog: MCSV.KR 과 웹소켓 세션이 연결되어있지 않습니다. 연결을 재시도 합니다."
