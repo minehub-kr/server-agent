@@ -4,19 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>kr.mcsv</groupId>
-    <artifactId>client</artifactId>
+    <groupId>kr.minehub.servers</groupId>
+    <artifactId>agent</artifactId>
     <version>0.0.1-ALPHA</version>
     <packaging>jar</packaging>
 
-    <name>Client</name>
+    <name>ServerAgent</name>
 
-    <description>MCSV.KR Client</description>
+    <description>Minehub ServerAgent</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <url>https://mcsv.kr</url>
+    <url>https://minehub.kr</url>
 
     <build>
         <plugins>

@@ -7,7 +7,7 @@
 This plugin is for integrating your server to [Minehub dashboard](https://dash.minehub.kr) which allows users to control their minecraft server from dashboard or equivalent api calls.  
 
 ## Nightly Builds
-[![Nightly Builds (Java 17)](https://github.com/minehub-kr/server-agent/actions/workflows/build.yml/badge.svg)](https://github.com/mcsv-kr/mcsv-client/actions/workflows/build.yml)
+[![Nightly Builds (Java 17)](https://github.com/minehub-kr/server-agent/actions/workflows/build.yml/badge.svg)](https://github.com/minehub-kr/server-agent/actions/workflows/build.yml)
 
 ## Target System
 Minehub Agent targets Java 17 by default.  

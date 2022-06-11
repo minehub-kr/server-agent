@@ -1,10 +1,10 @@
-name: MCSV-Client
+name: Minehub-ServerAgent
 version: ${project.version}
-main: kr.mcsv.client.Main
+main: kr.minehub.servers.agent.Main
 api-version: 1.16
-prefix: MCSV.KR
-description: MCSV.KR Client
-website: https://mcsv.kr
+prefix: Minehub
+description: Minehub ServerAgent
+website: https://minehub.kr
 commands:
   mcsv:
-    description: MCSV.KR Client Main Command
+    description: Minehub ServerAgent Main Command

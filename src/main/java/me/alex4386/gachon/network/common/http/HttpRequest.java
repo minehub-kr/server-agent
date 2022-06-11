@@ -1,6 +1,5 @@
 package me.alex4386.gachon.network.common.http;
 
-import kr.mcsv.client.Main;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
