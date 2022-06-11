@@ -186,7 +186,7 @@ public class JSONUtils {
     public static JSONObject logEventToJSON(LogEvent e) {
         JSONObject json = new JSONObject();
         json.put("level", e.getLevel().name());
-        json.put("message", e.getMessage().toString());
+        json.put("message", e.getMessage().getFormattedMessage());
         json.put("time", e.getTimeMillis());
 
         JSONObject threadJson = new JSONObject();
