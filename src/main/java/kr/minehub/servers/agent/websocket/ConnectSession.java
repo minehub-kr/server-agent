@@ -107,7 +107,7 @@ public class ConnectSession {
     public void sendLog(JSONObject log) {
         JSONObject json = new JSONObject();
         json.put("action", Commands.BUKKIT_LOG.toString());
-        json.put("payload", json);
+        json.put("payload", log);
 
         this.broadcastPayload(json);
     }
