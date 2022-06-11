@@ -56,14 +56,14 @@ public class MinehubCommand {
                 }
 
                 switch (action) {
-                    case SETUP:
+                    case REGISTER:
                     {
                         boolean isForced = false;
                         if (args.length > 2) {
                             isForced = args[1].toLowerCase().equals("confirm");
                         }
 
-                        return startSetup(sender, isForced);
+                        return registerServer(sender, isForced);
                     }
                     case LOGIN:
                     {
@@ -249,8 +249,8 @@ public class MinehubCommand {
         return true;
     }
 
-    private static boolean startSetup(CommandSender sender, boolean forceRegister) {
-        if (MinehubCommand.hasPermission(sender, "setup")) {
+    private static boolean registerServer(CommandSender sender, boolean forceRegister) {
+        if (MinehubCommand.hasPermission(sender, "register")) {
             if (!MinehubAPI.checkOnline()) {
                 sender.sendMessage(
                         AgentLogger.error("에러: Minehub이 점검 중 이거나, 서버가 온라인이 아닙니다.")
@@ -268,7 +268,7 @@ public class MinehubCommand {
                 return true;
             } else if (!forceRegister && Main.core.server.isRegistered()) {
                 sender.sendMessage(AgentLogger.error("에러: 이미 이 서버는 등록되어 있습니다!"));
-                sender.sendMessage(AgentLogger.error("에러: 강제로 새로 등록하려면, "+ChatColor.GREEN+"/minehub setup confirm"+ChatColor.RESET+" 명령어를 대신 실행하세요."));
+                sender.sendMessage(AgentLogger.error("에러: 강제로 새로 등록하려면, "+ChatColor.GREEN+"/minehub register confirm"+ChatColor.RESET+" 명령어를 대신 실행하세요."));
                 return true;
             }
 
