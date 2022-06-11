@@ -5,6 +5,8 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.json.simple.JSONObject;
 
 import kr.minehub.servers.agent.utils.JSONUtils;
@@ -33,21 +35,12 @@ public class BukkitLogHandler {
 
     private Appender getAppender() {
         if (this.appender == null) {
-            this.appender = new Appender() {
-                @Override public boolean isStarted() { return true; }
-                @Override public boolean isStopped() {return false;}
-                @Override public State getState() {return null;}
-                @Override public void initialize() {}
-                @Override public void start() { }
-                @Override public void stop() { }
-                @Override public void append(LogEvent e) {
-                    propagateEvent(e);
-                }
-                @Override public ErrorHandler getHandler() { return null; }
-                @Override public Layout<? extends Serializable> getLayout() { return null; }
-                @Override public String getName() { return "UClogs"; }
-                @Override public boolean ignoreExceptions() { return false; }
-                @Override public void setHandler(ErrorHandler arg0) {}
+            this.appender = new AbstractAppender("minehub-svagent", null, PatternLayout.createDefaultLayout(), false, null) {
+                @Override
+                public void append(LogEvent event) {
+                    // TODO Auto-generated method stub
+                    propagateEvent(event);
+                }       
             };
         }
 

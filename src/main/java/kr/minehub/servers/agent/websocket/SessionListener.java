@@ -71,8 +71,11 @@ public class SessionListener extends WebSocketAdapter {
     public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
         try {
             // Reconnect!
-            Bukkit.getLogger().info(AgentLogger.warn("Minehub과의 웹소켓 통신이 끊겼습니다. 다시 연결을 시도합니다."));
-            session.connect();
+            Bukkit.getLogger().warning(AgentLogger.warn("Minehub과의 웹소켓 통신이 끊겼습니다. 다시 연결을 시도합니다."));
+            
+            if (session != null) {
+                session.connect();
+            }
         } catch(Exception e) {
             Bukkit.getLogger().severe(AgentLogger.error("Minehub과의 웹소켓 통신을 다시 시작하는 도중 오류가 발생했습니다. 아래 스택트레이스를 확인하세요."));
             e.printStackTrace();

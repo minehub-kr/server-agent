@@ -187,7 +187,7 @@ public class JSONUtils {
         JSONObject json = new JSONObject();
 
         json.put("level", e.getLevel().name());
-        json.put("message", e.getMessage().getFormattedMessage());
+        json.put("message", e.getMessage().toString());
         json.put("time", e.getTimeMillis());
 
         JSONObject threadJson = new JSONObject();
