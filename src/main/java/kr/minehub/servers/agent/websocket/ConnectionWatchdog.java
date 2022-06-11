@@ -56,6 +56,10 @@ public class ConnectionWatchdog {
 
                             e.printStackTrace();
                         }
+                    } else if (!session.isConnected() && session.isConnecting()) {
+                        Bukkit.getLogger().warning(AgentLogger.warn(
+                                "WebsocketWatchdog: Minehub과의 연결이 아직 진행 중입니다. 계속 연결이 되지 않는다면 서버를 재시작하세요."
+                        ));
                     }
                 }
             }

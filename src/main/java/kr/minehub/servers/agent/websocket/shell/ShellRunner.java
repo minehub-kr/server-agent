@@ -12,6 +12,7 @@ public class ShellRunner {
     int exitVal = -1;
     
     String stdouterr = "";
+    String shellExecutable = null;
 
     public ShellRunner(String cmdline) {
         builder = new ProcessBuilder();
@@ -19,6 +20,11 @@ public class ShellRunner {
         String shell = getShellExecutable();
         builder.command(shell, (isWindows() ? "/c" : "-c"), cmdline);
         builder.directory(new File(System.getProperty("user.dir")));
+    }
+
+    public ShellRunner(String shellExecutable, String cmdline) {
+        this(cmdline);
+        this.shellExecutable = shellExecutable;
     }
 
     public int run() throws IOException, InterruptedException {
@@ -54,7 +60,8 @@ public class ShellRunner {
         return System.getProperty("os.name").toLowerCase().startsWith("windows");
     }
 
-    public static String getShellExecutable() {
+    public String getShellExecutable() {
+        if (this.shellExecutable != null) return this.shellExecutable;
         return isWindows() ? "cmd.exe" : "/bin/sh";
     }
     

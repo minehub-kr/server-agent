@@ -3,7 +3,7 @@ version: ${project.version}
 main: kr.minehub.servers.agent.Main
 api-version: 1.16
 prefix: Minehub
-description: Minehub ServerAgent
+description: "Minehub ServerAgent"
 website: https://minehub.kr
 commands:
   mcsv:

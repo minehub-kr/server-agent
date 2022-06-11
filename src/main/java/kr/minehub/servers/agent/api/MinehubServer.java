@@ -3,6 +3,7 @@ package kr.minehub.servers.agent.api;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.minehub.servers.agent.Main;
+import kr.minehub.servers.agent.log.BukkitLogHandler;
 import kr.minehub.servers.agent.websocket.ConnectionWatchdog;
 import kr.minehub.servers.agent.utils.JSONUtils;
 import kr.minehub.servers.agent.websocket.ConnectSession;
@@ -25,6 +26,7 @@ public class MinehubServer {
     private String serverId = null;
     private ConnectSession session;
     private ConnectionWatchdog wsWatchdog;
+    private BukkitLogHandler logHandler;
 
     private boolean isStartedUp = false;
 
@@ -84,18 +86,17 @@ public class MinehubServer {
         if (!this.isRegistered() || this.getServerId() == null) return;
         if (session == null) session = new ConnectSession(this);
         if (wsWatchdog == null) wsWatchdog = new ConnectionWatchdog(this);
+        if (logHandler == null) logHandler = new BukkitLogHandler();
+
+        this.isStartedUp = true;
 
         session.connect();
         wsWatchdog.start();
-
-        this.isStartedUp = true;
-        this.reportServerStartup();
+        logHandler.start();
     }
 
     public void stop() {
         if (!this.isStartedUp) return;
-
-        this.reportServerShutdown();
 
         // disable websocket watchdog and disconnect.
         if (wsWatchdog != null) wsWatchdog.stop();
@@ -124,20 +125,6 @@ public class MinehubServer {
     public ConnectSession getWebsocketSession() {
         return this.session;
     }
-
-    /* = API Calls = */
-    public boolean reportServerStartup() {
-        return MinehubAPI.reportServerStartup(Main.core.authorization, this.serverId, JSONUtils.createServerStartupJSON());
-    }
-
-    public boolean reportServerShutdown() {
-        return MinehubAPI.reportServerShutdown(Main.core.authorization, this.serverId);
-    }
-
-    public boolean updateMetadata() {
-        return MinehubAPI.reportMetadata(Main.core.authorization, this.serverId, JSONUtils.createMetadataJSON());
-    }
-
 
     /* = Configuration = */
     public void importConfig(YamlConfiguration config) {

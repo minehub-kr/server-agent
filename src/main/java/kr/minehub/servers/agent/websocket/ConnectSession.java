@@ -6,6 +6,8 @@ import kr.minehub.servers.agent.Main;
 import kr.minehub.servers.agent.api.MinehubAPI;
 import kr.minehub.servers.agent.api.MinehubServer;
 import kr.minehub.servers.agent.core.AgentCore;
+import kr.minehub.servers.agent.log.AgentLogger;
+import org.bukkit.Bukkit;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -28,25 +30,28 @@ public class ConnectSession {
     }
 
     public WebSocket connect() throws IOException, InvalidRefreshTokenException, WebSocketException {
-        this.isConnecting = true;
         try {
             if (this.isConnecting()) return null;
             if (this.isConnected()) return null;
-            
+
+            this.isConnecting = true;
+
             // if prevent reconnect is activated, do not reconnect.
             if (this.ws != null && !this.isConnected()) {
                 if (this.preventReconnect) {
                     return null;
                 }
             }
+
+            Bukkit.getLogger().info(AgentLogger.log("Minehub 서버에 연결을 시작합니다."));
     
             WebSocket ws;
-    
             WebSocketFactory factory = new WebSocketFactory();
     
             URI wsURI = URI.create("wss://"+ MinehubAPI.getHostname() +"/v1/servers/"+this.server.getServerId()+"/ws/server");
             factory.setServerName(wsURI.getHost());
-    
+
+            Bukkit.getLogger().info(AgentLogger.log("Minehub 서버에 연결 시도 중: "+wsURI.toString()));
             ws = factory.createSocket(wsURI);
     
             if (this.adapter == null) {
@@ -59,22 +64,20 @@ public class ConnectSession {
     
             ws.connect();
             this.ws = ws;
-    
+
+            this.isConnecting = false;
             return this.ws;
         } catch(IOException | InvalidRefreshTokenException | WebSocketException e) {
             this.isConnecting = false;
             this.ws = null;
+            e.printStackTrace();
             throw e;
         }
     }
 
-    public void retryConnect() {
-
-    }
-
     public void disconnect() {
         this.preventReconnect = true;
-        ws.disconnect();
+        if (ws != null) ws.disconnect();
     }
 
     public boolean isConnected() {
