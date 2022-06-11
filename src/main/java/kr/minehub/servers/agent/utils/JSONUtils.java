@@ -1,5 +1,6 @@
 package kr.minehub.servers.agent.utils;
 
+import org.apache.logging.log4j.core.LogEvent;
 import org.json.simple.JSONObject;
 
 import java.io.PrintWriter;
@@ -179,6 +180,22 @@ public class JSONUtils {
         json.put("runtime", runtimeInfo);
         json.put("version", SystemUtils.getJavaVersion());
 
+        return json;
+    }
+
+    public static JSONObject logEventToJSON(LogEvent e) {
+        JSONObject json = new JSONObject();
+
+        json.put("level", e.getLevel().name());
+        json.put("message", e.getMessage().getFormattedMessage());
+        json.put("time", e.getTimeMillis());
+
+        JSONObject threadJson = new JSONObject();
+        threadJson.put("id", e.getThreadId());
+        threadJson.put("name", e.getThreadName());
+        threadJson.put("priority", e.getThreadPriority());
+
+        json.put("thread", threadJson);
         return json;
     }
 

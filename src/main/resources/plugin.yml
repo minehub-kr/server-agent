@@ -6,5 +6,5 @@ prefix: Minehub
 description: "Minehub ServerAgent"
 website: https://minehub.kr
 commands:
-  mcsv:
+  minehub:
     description: Minehub ServerAgent Main Command

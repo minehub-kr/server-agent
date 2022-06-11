@@ -29,7 +29,7 @@ public class MinehubCommand {
         int currentInput = args.length - 1;
         String currentArg = args[currentInput];
 
-        if (commandName.equals("mcsv")) {
+        if (commandName.equals("minehub")) {
             if (currentInput == 0) {
                 for (MinehubCommandAction action : MinehubCommandAction.values()) {
                     if (action.hasPermission(sender)) {
@@ -45,7 +45,7 @@ public class MinehubCommand {
     public static boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         String commandName = label.toLowerCase();
 
-        if (commandName.equals("mcsv")) {
+        if (commandName.equals("minehub")) {
             if (args.length >= 1) {
                 MinehubCommandAction action = MinehubCommandAction.getAction(args[0]);
                 if (action == null) {
@@ -89,7 +89,7 @@ public class MinehubCommand {
                             AgentLogger.log("Minehub 클라이언트 - 버전: " + Main.version)
                         );
                         sender.sendMessage(
-                            MinehubCommandAction.getAllManual(sender, "mcsv", "")
+                            MinehubCommandAction.getAllManual(sender, label, "")
                         );
                         return true;
                 }
@@ -177,7 +177,7 @@ public class MinehubCommand {
             );
 
             sender.sendMessage("");
-            sender.sendMessage("로그인을 진행 한 후, 코드를 복사해 명령어(/mcsv login 코드)를 실행 해 주세요.");
+            sender.sendMessage("로그인을 진행 한 후, 코드를 복사해 명령어(/minehub login 코드)를 실행 해 주세요.");
 
         } else {
             sender.sendMessage(AgentLogger.error("권한이 없습니다."));
@@ -268,7 +268,7 @@ public class MinehubCommand {
                 return true;
             } else if (!forceRegister && Main.core.server.isRegistered()) {
                 sender.sendMessage(AgentLogger.error("에러: 이미 이 서버는 등록되어 있습니다!"));
-                sender.sendMessage(AgentLogger.error("에러: 강제로 새로 등록하려면, "+ChatColor.GREEN+"/mcsv setup confirm"+ChatColor.RESET+" 명령어를 대신 실행하세요."));
+                sender.sendMessage(AgentLogger.error("에러: 강제로 새로 등록하려면, "+ChatColor.GREEN+"/minehub setup confirm"+ChatColor.RESET+" 명령어를 대신 실행하세요."));
                 return true;
             }
 

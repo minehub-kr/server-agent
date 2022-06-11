@@ -21,7 +21,7 @@ public class BukkitLogHandler {
         return this.coreLogger;
     }
 
-    private void addEvent(LogEvent event) {
+    private void propagateEvent(LogEvent event) {
         if (consumer != null) {
             consumer.accept(event);
         }
@@ -37,7 +37,7 @@ public class BukkitLogHandler {
                 @Override public void start() { }
                 @Override public void stop() { }
                 @Override public void append(LogEvent e) {
-                    String message = e.getMessage().getFormattedMessage();
+                    propagateEvent(e);
                 }
                 @Override public ErrorHandler getHandler() { return null; }
                 @Override public Layout<? extends Serializable> getLayout() { return null; }
@@ -49,6 +49,7 @@ public class BukkitLogHandler {
 
         return this.appender;
     }
+    
     public void start() {
         if (!this.initialized) {
             this.getAppender().start();
