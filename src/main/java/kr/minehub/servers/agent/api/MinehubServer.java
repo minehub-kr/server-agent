@@ -93,11 +93,19 @@ public class MinehubServer {
         session.connect();
         wsWatchdog.start();
         logHandler.start();
+
+        logHandler.registerWebsocket(session);
     }
 
     public void stop() {
         if (!this.isStartedUp) return;
 
+        // stop pipelining log4j logs to websocket
+        if (logHandler != null) {
+            logHandler.unregisterWebsocket();
+            logHandler.stop();
+        }
+        
         // disable websocket watchdog and disconnect.
         if (wsWatchdog != null) wsWatchdog.stop();
         if (session != null) session.disconnect();

@@ -95,4 +95,20 @@ public class ConnectSession {
     public void sendMessage(JSONObject json) {
         this.sendMessage(json.toJSONString());
     }
+
+    public void broadcastPayload(JSONObject json) {
+        JSONObject envelope = new JSONObject();
+        envelope.put("from", "server");
+        envelope.put("payload", json);
+
+        this.sendMessage(envelope);
+    }
+
+    public void sendLog(JSONObject log) {
+        JSONObject json = new JSONObject();
+        json.put("action", Commands.BUKKIT_LOG.toString());
+        json.put("payload", json);
+
+        this.broadcastPayload(json);
+    }
 }

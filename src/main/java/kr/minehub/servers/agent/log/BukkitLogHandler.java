@@ -5,6 +5,10 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.json.simple.JSONObject;
+
+import kr.minehub.servers.agent.utils.JSONUtils;
+import kr.minehub.servers.agent.websocket.ConnectSession;
 
 import java.io.Serializable;
 import java.util.function.Consumer;
@@ -49,7 +53,7 @@ public class BukkitLogHandler {
 
         return this.appender;
     }
-    
+
     public void start() {
         if (!this.initialized) {
             this.getAppender().start();
@@ -66,7 +70,19 @@ public class BukkitLogHandler {
         }
     }
 
-    public void setConsumer(Consumer<LogEvent> consumer) {
+    private void setConsumer(Consumer<LogEvent> consumer) {
         this.consumer = consumer;
+    }
+
+    public void registerWebsocket(ConnectSession session) {
+        this.setConsumer((e) -> {
+            if (session.isConnected()) {
+                session.sendLog(JSONUtils.logEventToJSON(e));
+            }
+        });
+    }
+
+    public void unregisterWebsocket() {
+        this.setConsumer(null);
     }
 }

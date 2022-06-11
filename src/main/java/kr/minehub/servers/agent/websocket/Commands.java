@@ -10,6 +10,7 @@ public enum Commands {
     GET_PLUGIN_VERSION("get_plugin_version"),
     GET_BUKKIT_VERSION("get_bukkit_version"),
     GET_BUKKIT_INFO("get_bukkit_info"),
+    BUKKIT_LOG("bukkit_log"),
 
     ;
 
