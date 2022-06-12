@@ -22,6 +22,8 @@ public final class Main extends JavaPlugin {
 
     public static AgentCore core;
     public static Logger logger;
+    
+    public static long startedAt = System.currentTimeMillis();
 
     @Override
     public void onEnable() {
@@ -29,6 +31,8 @@ public final class Main extends JavaPlugin {
         version = this.getDescription().getVersion();
 
         System.setProperty("http.agent", "minehub-svagent/"+version);
+        
+        startedAt = System.currentTimeMillis();
 
         // Plugin startup logic
         logger = Bukkit.getLogger();
