@@ -1,5 +1,7 @@
 package kr.minehub.servers.agent.utils;
 
+import kr.minehub.servers.agent.Main;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.core.LogEvent;
 import org.json.simple.JSONArray;
@@ -53,7 +55,9 @@ public class JSONUtils {
         json.put("os", createOSMetadataJSON());
         json.put("process", createProcessMetadataJSON());
         json.put("hardware", createHardwareMetadataJSON());
-        json.put("network", createNetworkMetadataJSON());
+        json.put("network", createNetworkMetadataJSON);
+        
+        json.put("startedAt", Main.startedAt);
 
         if (includeRaw) {
             json.put("raw", createRAWMetadataJSON());
