@@ -23,6 +23,8 @@ public class SystemUtils {
     public static CentralProcessor.ProcessorIdentifier identifier = cpu.getProcessorIdentifier();
     public static OperatingSystem os = systemInfo.getOperatingSystem();
 
+    private static boolean isTemperatureUnavailable = false;
+
     public static JSONObject rawSystemPropertiesJSON() {
         // This bass is f--kin' raw! what the f--- is going on?
         // - Gordon Ramsay @ Kitchen Nightmares
@@ -123,7 +125,18 @@ public class SystemUtils {
     }
 
     public static double getCPUTemp() {
-        return hardware.getSensors().getCpuTemperature();
+        if (!isTemperatureUnavailable) {
+            double result = hardware.getSensors().getCpuTemperature();
+        
+            // Mitigate failing to get cpu temperature on virtualized platforms
+            if (result == 0) {
+                isTemperatureUnavailable = true;
+            }
+
+            return result;
+        }
+        
+        return 0;
     }
 
     public static double getCPUVoltage() {
