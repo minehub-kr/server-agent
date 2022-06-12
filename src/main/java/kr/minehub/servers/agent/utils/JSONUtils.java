@@ -55,7 +55,7 @@ public class JSONUtils {
         json.put("os", createOSMetadataJSON());
         json.put("process", createProcessMetadataJSON());
         json.put("hardware", createHardwareMetadataJSON());
-        json.put("network", createNetworkMetadataJSON);
+        json.put("network", createNetworkMetadataJSON());
         
         json.put("startedAt", Main.startedAt);
 
