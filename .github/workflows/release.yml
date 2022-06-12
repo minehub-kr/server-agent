@@ -40,7 +40,7 @@ jobs:
       - name: Rename package
         run: |
           mkdir releases
-          mv target/client-${VER_TAG:1}.jar releases/client-${VER_TAG:1}-mc${MC_VERSION}.jar
+          mv target/agent-${VER_TAG:1}.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar
         env:
           VER_TAG: ${{ github.event.release.tag_name }}
           MC_VERSION: ${{ matrix.mc-version }}
@@ -48,7 +48,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: releases/client-*.jar
+          file: releases/agent-*.jar
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
