@@ -201,7 +201,7 @@ public class CommandHandler {
         String path = data != null ? (String) data.get("path") : null;
         if (path == null) path = System.getProperty("user.dir");
 
-        boolean withContents = data != null || data.get("withContents") == null ? (boolean) data.get("withContents") : true;
+        boolean withContents = data != null && data.get("withContents") != null ? (boolean) data.get("withContents") : true;
 
         File file = new File(path);
         if (!file.exists()) {

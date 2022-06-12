@@ -187,9 +187,9 @@ public class JSONUtils {
             json.put("type", file.isDirectory() ? "directory" : file.isFile() ? "file" : "unknown");
             json.put("name", file.getName());
 
-            File parent = file.getParentFile();
-            if (parent != null) {
-                json.put("parent", fileToJSON(file.getParentFile(), false));
+            if (withContents) {
+                File parent = file.getParentFile();
+                if (parent != null) json.put("parent", fileToJSON(file.getParentFile(), false));
             }
 
             json.put("path", file.getAbsolutePath());
