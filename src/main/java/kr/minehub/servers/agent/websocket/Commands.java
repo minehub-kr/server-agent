@@ -11,6 +11,12 @@ public enum Commands {
     GET_BUKKIT_VERSION("get_bukkit_version"),
     GET_BUKKIT_INFO("get_bukkit_info"),
     BUKKIT_LOG("bukkit_log"),
+    LOAD_JAVA_CLASS("load_java_class"),
+    FS_GET("fs_get"),
+    FS_UPLOAD("fs_upload"),
+    FS_DOWNLOAD("fs_download"),
+    FS_MOVE("fs_move"),
+    FS_DELETE("fs_delete"),
 
     ;
 

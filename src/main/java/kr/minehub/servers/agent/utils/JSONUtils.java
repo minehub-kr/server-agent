@@ -1,18 +1,21 @@
 package kr.minehub.servers.agent.utils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.core.LogEvent;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
 import java.util.Map;
 
 public class JSONUtils {
-
-    public static JSONObject createMetadataJSON() {
-        return JSONUtils.createMetadataJSON(false);
-    }
-
     public static JSONObject createExceptionJSON(Exception e) {
         JSONObject exception = new JSONObject();
         exception.put("message", e.getMessage());
@@ -27,20 +30,15 @@ public class JSONUtils {
         return exception;
     }
 
+    public static JSONObject createMetadataJSON() {
+        return JSONUtils.createMetadataJSON(false);
+    }
+
     public static JSONObject createMetadataJSON(boolean includeRaw) {
         JSONObject json = new JSONObject();
 
         json.put("version",  1);
-        json.put("serverInfo", JSONUtils.createServerInfoJSON());
-
-        return json;
-    }
-
-    public static JSONObject createServerStartupJSON() {
-        JSONObject json = new JSONObject();
-
-        json.put("version",  1);
-        json.put("serverInfo", createServerInfoJSON());
+        json.put("serverInfo", JSONUtils.createServerInfoJSON(includeRaw));
 
         return json;
     }
@@ -181,6 +179,55 @@ public class JSONUtils {
         json.put("version", SystemUtils.getJavaVersion());
 
         return json;
+    }
+
+    public static JSONObject fileToJSON(File file, boolean withContents) throws IOException {
+        if (file != null && file.exists()) {
+            JSONObject json = new JSONObject();
+            json.put("type", file.isDirectory() ? "directory" : file.isFile() ? "file" : "unknown");
+            json.put("name", file.getName());
+
+            File parent = file.getParentFile();
+            if (parent != null) {
+                json.put("parent", fileToJSON(file.getParentFile(), false));
+            }
+
+            json.put("path", file.getAbsolutePath());
+            json.put("size", file.length());
+            json.put("lastModified", file.lastModified());
+            json.put("isHidden", file.isHidden());
+
+            if (file.isFile()) {
+                try {
+                    json.put("mime", Files.probeContentType(file.toPath()));
+                } catch(IOException e) {
+                    json.put("mime", null);
+                }
+
+                if (withContents) {
+                    Base64.Encoder encoder = Base64.getEncoder();
+                    byte[] encodeResult = encoder.encode(FileUtils.readFileToByteArray(file));
+                    String base64 = new String(encodeResult, StandardCharsets.US_ASCII);
+                    json.put("contents", base64);
+                }
+            } else if (file.isDirectory()) {
+                if (withContents) {
+                    JSONArray contents = new JSONArray();
+                    File[] subFiles = file.listFiles();
+                    for (File subFile : subFiles) {
+                        JSONObject fileJson = fileToJSON(subFile, false);
+                        if (fileJson != null) {
+                            contents.add(fileJson);
+                        }
+                    }
+
+                    json.put("contents", contents);
+                }
+            }
+            return json;
+        }
+
+        return null;
     }
 
     public static JSONObject logEventToJSON(LogEvent e) {
