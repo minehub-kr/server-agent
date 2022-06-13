@@ -25,6 +25,7 @@ public class SessionListener extends WebSocketAdapter {
     public void onTextMessage(WebSocket websocket, String text) throws Exception {
         super.onTextMessage(websocket, text);
         String to = null;
+        String action = null;
 
         try {
             JSONParser parser = new JSONParser();
@@ -34,6 +35,7 @@ public class SessionListener extends WebSocketAdapter {
 
             to = (String) reqJson.get("from");
             JSONObject requestPayload = (JSONObject) reqJson.get("payload");
+            action = (String) requestPayload.get("action");
 
             JSONObject payload = this.handler.processWebsocket(requestPayload);
             JSONObject json = new JSONObject();
@@ -53,11 +55,12 @@ public class SessionListener extends WebSocketAdapter {
                 json.put("from", "server");
 
                 JSONObject payload = new JSONObject();
-                json.put("error", "java_exception");
+                payload.put("error", "java_exception");
+
+                if (action == null) payload.put("action", action);
 
                 JSONObject exception = JSONUtils.createExceptionJSON(e);
-
-                json.put("exception", exception);
+                payload.put("exception", exception);
 
                 json.put("payload", payload);
 
