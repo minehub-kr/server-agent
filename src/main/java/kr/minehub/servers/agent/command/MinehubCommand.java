@@ -4,6 +4,8 @@ import com.stella_it.meiling.InvalidRefreshTokenException;
 import com.stella_it.meiling.MeilingAuthorizationMethod;
 import kr.minehub.servers.agent.Main;
 import kr.minehub.servers.agent.api.MinehubAPI;
+import kr.minehub.servers.agent.api.MinehubServer;
+import kr.minehub.servers.agent.api.auth.MinehubAuthorization;
 import kr.minehub.servers.agent.log.AgentLogger;
 import kr.minehub.servers.agent.utils.JSONUtils;
 import kr.minehub.servers.agent.utils.SystemUtils;
@@ -15,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MinehubCommand {
@@ -74,6 +77,17 @@ public class MinehubCommand {
                             return authorizeUsingAuthcode(sender, authorizationCode);
                         } else {
                             sender.sendMessage(AgentLogger.error("올바르지 않은 인수입니다."));
+                        }
+                    }
+                        break;
+                    
+                    case RENAME:
+                    {
+                        if (args.length > 2) {
+                            String name = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                            return renameServer(sender, name);
+                        } else {
+                            sender.sendMessage(AgentLogger.error("이름이 입력되지 않았습니다."));
                         }
                     }
                         break;
@@ -283,6 +297,34 @@ public class MinehubCommand {
             Main.core.save();
             sender.sendMessage(AgentLogger.log("서버 등록에 성공했습니다."));
 
+        } else {
+            sender.sendMessage(AgentLogger.error("권한이 없습니다."));
+        }
+        return true;
+    }
+
+    private static boolean renameServer(CommandSender sender, String name) {
+        if (MinehubCommand.hasPermission(sender, "rename")) {
+            if (!Main.core.authorization.isAuthorized()) {
+                sender.sendMessage(AgentLogger.error("에러: 로그인 되어있지 않습니다!"));
+                return true;
+            }
+
+            if (Main.core.server == null || !Main.core.server.isRegistered()) {
+                sender.sendMessage(AgentLogger.error("에러: 서버가 등록되어 있지 않습니다!"));
+                return true;
+            }
+
+            MinehubServer server = Main.core.server;
+            MinehubAuthorization authorization = Main.core.authorization;
+
+            boolean success = MinehubAPI.renameServer(server, authorization, name);
+
+            if (success) {
+                sender.sendMessage(AgentLogger.log("서버 이름이 "+name+"으로 변경되었습니다."));
+            } else {
+                sender.sendMessage(AgentLogger.error("에러: 서버 이름 변경 중 오류가 발생했습니다! 자세한 내용은 콘솔을 확인해 주세요."));
+            }
         } else {
             sender.sendMessage(AgentLogger.error("권한이 없습니다."));
         }

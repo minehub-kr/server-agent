@@ -10,6 +10,7 @@ public enum MinehubCommandAction {
     HELP("help", "", "이 도움말을 표시합니다."),
     LOGIN("login", "", "Minehub ServerAgent에 Stella IT Accounts로 로그인합니다."),
     REGISTER("register", "", "Minehub ServerAgent에 이 서버를 등록합니다."),
+    RENAME("rename", "<name>", "Minehub ServerAgent에 등록된 이 서버의 이름을 변경합니다."),
     INFO("info", "", "ServerAgent의 현재 상태를 표시합니다."),
     DEBUG("debug", "<? command>", "ServerAgent를 디버깅 하기 위한 명령을 실행 합니다"),
     TOKEN("token", "", "(Debug) oAuth2 인증용 토큰을 표시합니다.");

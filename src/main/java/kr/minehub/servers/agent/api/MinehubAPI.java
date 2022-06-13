@@ -67,4 +67,22 @@ public class MinehubAPI {
 
         return servers;
     }
+
+    public static boolean renameServer(MinehubServer server, MinehubAuthorization authorization, String name) {
+        try {
+            JSONObject payload = new JSONObject();
+            payload.put("name", name);
+
+            HttpRequest req = new HttpRequest(HttpRequestMethod.PUT, new URL(baseURL + "/v1/servers/"+server.getServerId()), payload);
+            authorization.setToken(req);
+
+            HttpResponse res = req.getResponse();
+            return res.code.isOK();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (InvalidRefreshTokenException | IOException e) {
+            return false;
+        }
+    }
 }
