@@ -21,6 +21,8 @@ public class AgentCore {
     public MinehubAuthorization authorization;
     public MinehubServer server = null;
 
+    public AgentListener listener = new AgentListener();
+
     private int scheduleId = -1;
 
     public void registerSchedule() {
@@ -77,6 +79,7 @@ public class AgentCore {
         }
 
         this.registerSchedule();
+        this.listener.registerEvent();
     }
 
     public void stop() {
@@ -87,6 +90,7 @@ public class AgentCore {
         }
 
         this.unregisterSchedule();
+        this.listener.unregisterEvent();
     }
 
     public boolean load() {
