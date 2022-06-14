@@ -17,6 +17,8 @@ public enum Commands {
     FS_DOWNLOAD("fs_download"),
     FS_MOVE("fs_move"),
     FS_DELETE("fs_delete"),
+    PLAYER_JOIN("player_join"),
+    PLAYER_LEAVE("player_leave"),
 
     ;
 

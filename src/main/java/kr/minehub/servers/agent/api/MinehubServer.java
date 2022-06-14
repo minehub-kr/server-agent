@@ -3,7 +3,7 @@ package kr.minehub.servers.agent.api;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.stella_it.meiling.InvalidRefreshTokenException;
 import kr.minehub.servers.agent.Main;
-import kr.minehub.servers.agent.log.BukkitLogHandler;
+import kr.minehub.servers.agent.log.Log4JAttacher;
 import kr.minehub.servers.agent.websocket.ConnectionWatchdog;
 import kr.minehub.servers.agent.utils.JSONUtils;
 import kr.minehub.servers.agent.websocket.ConnectSession;
@@ -26,7 +26,7 @@ public class MinehubServer {
     private String serverId = null;
     private ConnectSession session;
     private ConnectionWatchdog wsWatchdog;
-    private BukkitLogHandler logHandler;
+    private Log4JAttacher logHandler;
 
     private boolean isStartedUp = false;
 
@@ -86,7 +86,7 @@ public class MinehubServer {
         if (!this.isRegistered() || this.getServerId() == null) return;
         if (session == null) session = new ConnectSession(this);
         if (wsWatchdog == null) wsWatchdog = new ConnectionWatchdog(this);
-        if (logHandler == null) logHandler = new BukkitLogHandler();
+        if (logHandler == null) logHandler = new Log4JAttacher();
 
         this.isStartedUp = true;
 

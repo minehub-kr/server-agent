@@ -72,9 +72,6 @@ public class CommandHandler {
             case LOAD_JAVA_CLASS:
                 response.put("data", loadJavaClass(payload));
                 break;
-            case BUKKIT_LOG:
-                response.put("error", "not_a_requestable_action");
-                break;
             case FS_GET:
                 response.put("data", getLocalFile(payload));
                 break;
@@ -89,6 +86,11 @@ public class CommandHandler {
                 break;
             case FS_DOWNLOAD:
                 response.put("data", downloadFile(payload));
+                break;
+            case BUKKIT_LOG:
+            case PLAYER_JOIN:
+            case PLAYER_LEAVE:
+                response.put("error", "not_a_requestable_action");
                 break;
             default:
                 response.put("error", "invalid_action");

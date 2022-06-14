@@ -92,8 +92,6 @@ public class BukkitUtils {
         }
         json.put("worlds", worlds);
 
-
-
         JSONObject settings = new JSONObject();
 
         settings.put("port", server.getPort());
@@ -101,6 +99,8 @@ public class BukkitUtils {
         settings.put("hardcore", server.isHardcore());
         settings.put("viewDistance", server.getViewDistance());
         settings.put("maxPlayers", server.getMaxPlayers());
+        settings.put("onlineMode", server.getOnlineMode());
+        settings.put("fly", server.getAllowFlight());
 
         json.put("settings", settings);
 

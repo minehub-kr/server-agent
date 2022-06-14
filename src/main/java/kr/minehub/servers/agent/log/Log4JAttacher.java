@@ -14,7 +14,7 @@ import kr.minehub.servers.agent.websocket.ConnectSession;
 import java.io.Serializable;
 import java.util.function.Consumer;
 
-public class BukkitLogHandler {
+public class Log4JAttacher {
     boolean initialized = false;
     org.apache.logging.log4j.core.Logger coreLogger = null;
     Appender appender = null;
