@@ -66,7 +66,7 @@ public class AgentListener implements Listener {
     public JSONObject buildPayload(Commands command, JSONObject data) {
         JSONObject payload = new JSONObject();
 
-        payload.put("action", command.name());
+        payload.put("action", command.toString());
         payload.put("data", data);
 
         return payload;
