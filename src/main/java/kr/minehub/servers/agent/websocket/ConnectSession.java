@@ -51,6 +51,9 @@ public class ConnectSession {
             URI wsURI = URI.create("wss://"+ MinehubAPI.getHostname() +"/v1/servers/"+this.server.getServerId()+"/ws/server");
             factory.setServerName(wsURI.getHost());
 
+            // set timeout to 5 seconds
+            factory.setConnectionTimeout(5000);
+
             Bukkit.getLogger().info(AgentLogger.log("Minehub 서버에 연결 시도 중: "+wsURI.toString()));
             ws = factory.createSocket(wsURI);
     
