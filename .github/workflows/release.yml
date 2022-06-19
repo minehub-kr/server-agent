@@ -52,10 +52,3 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
-      - name: Commit updated version info to github
-        run: |
-          git add pom.xml
-          git config user.name Alex4386
-          git config user.email psh010209@gmail.com
-          git commit -m "chore: bump up version to ${VER_TAG:1}"
-          git push
