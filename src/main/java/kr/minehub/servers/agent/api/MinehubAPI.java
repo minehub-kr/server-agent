@@ -52,6 +52,10 @@ public class MinehubAPI {
             HttpResponse res = req.getResponse();
             JSONArray json = res.toJsonArray();
 
+            if (!res.code.isOK()) {
+                return null;
+            } 
+
             for (int i = 0; i < json.size(); i++) {
                 JSONObject server = (JSONObject) json.get(i);
 
