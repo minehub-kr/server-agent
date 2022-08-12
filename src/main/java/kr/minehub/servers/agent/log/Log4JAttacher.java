@@ -59,6 +59,9 @@ public class Log4JAttacher {
                 Bukkit.getLogger().info(
                         "BukkitLogHandler: Log4J 에 연결 성공. constructor가 구 버전입니다. 호환성 모드로 시작합니다. (type 1)"
                 );
+                Bukkit.getLogger().warning(
+                        "BukkitLogHandler: Log4J가 구형 버전으로 Log4Shell 취약점이 존재할 수 있습니다. 빠른 시일 내에 패치하거나 완화 조치를 진행하세요."
+                );
                 this.appender = new AbstractAppender(name, null, PatternLayout.createDefaultLayout(), false) {
                     @Override
                     public void append(LogEvent event) {
@@ -69,6 +72,9 @@ public class Log4JAttacher {
             } else if (constructorExists(String.class, Filter.class, Layout.class)) {
                 Bukkit.getLogger().info(
                         "BukkitLogHandler: Log4J 에 연결 성공. constructor가 구 버전입니다. 호환성 모드로 시작합니다. (type 2)"
+                );
+                Bukkit.getLogger().warning(
+                        "BukkitLogHandler: Log4J가 구형 버전으로 Log4Shell 취약점이 존재할 수 있습니다. 빠른 시일 내에 패치하거나 완화 조치를 진행하세요."
                 );
                 this.appender = new AbstractAppender(name, null, PatternLayout.createDefaultLayout()) {
                     @Override
