@@ -1,5 +1,7 @@
 package kr.minehub.servers.agent.utils;
 
+import java.io.File;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -56,6 +58,18 @@ public class BukkitUtils {
 
         PluginDescriptionFile file = plugin.getDescription();
 
+        try {
+            Method method = plugin.getClass().getDeclaredMethod("getFile");
+            method.setAccessible(true);
+
+            File pluginFile = (File) method.invoke(plugin);
+            method.setAccessible(false);
+
+            json.put("path", pluginFile.getAbsolutePath());
+        } catch (Exception e) {
+
+        } 
+
         if (file == null) {
             json.put("name", plugin.getName());
         } else {
@@ -65,6 +79,10 @@ public class BukkitUtils {
             json.put("website", file.getWebsite());
             json.put("version", file.getVersion());
             json.put("main", file.getMain());
+            
+            if (GeneralUtils.hasMethod(file.getClass(), "getAPIVersion")) {
+                json.put("targetAPI", file.getAPIVersion());
+            }
             
             JSONArray authors = new JSONArray();
             for (String author: file.getAuthors()) {

@@ -25,6 +25,16 @@ public class GeneralUtils {
         return result;
     }
 
+    public static boolean hasMethod(Class<?> clazz, String method) {
+        try {
+            clazz.getMethod(method, (Class<?>[]) null);
+        } catch(NoSuchMethodException e) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static String getCopyrightString() {
         return "Copyright © "+
                 ChatColor.GREEN+"Minehub "+
