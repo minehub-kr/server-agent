@@ -31,6 +31,10 @@ jobs:
 
         include:
           - java-version: 1.8
+            mc-version: 1.8
+            unsupported: true
+
+          - java-version: 1.8
             mc-version: 1.12.2
             unsupported: true
 
