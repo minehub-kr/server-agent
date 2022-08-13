@@ -13,4 +13,7 @@ echo "Target Spigot-API version: $api_ver_name, api-version: $api_ver"
 sed -i s/1.16.5-R0.1-SNAPSHOT/$api_ver_name/g ./pom.xml
 sed -i s/1.16/$api_ver/g ./src/main/resources/plugin.yml
 
+echo "Delta Patching source code to match with SDK changes on Spigot-API: $api_ver_name"
+./__legacy__/process.sh $1
+
 echo "Done."
