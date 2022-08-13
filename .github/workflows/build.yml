@@ -19,6 +19,7 @@ on:
 
 jobs:
   build:
+    name: Build ${{ matrix.mc-version }}
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.unsupported }}
 

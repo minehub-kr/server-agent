@@ -26,9 +26,11 @@ public class BukkitUtils {
         json.put("locale", player.getLocale().toString());
         json.put("exp", getPlayerLevelJSON(player));
         json.put("location", getLocationJSON(player.getLocation()));
-        json.put("ping", player.getPing());
         json.put("health", player.getHealth());
         json.put("isOp", player.isOp());
+
+        Integer ping = GeneralUtils.callMethod(player, "getPing");
+        if (ping != null) json.put("ping", (int) ping);
 
         return json;
     }
@@ -58,17 +60,12 @@ public class BukkitUtils {
 
         PluginDescriptionFile file = plugin.getDescription();
 
-        try {
-            Method method = plugin.getClass().getDeclaredMethod("getFile");
-            method.setAccessible(true);
-
-            File pluginFile = (File) method.invoke(plugin);
-            method.setAccessible(false);
-
-            json.put("path", pluginFile.getAbsolutePath());
-        } catch (Exception e) {
-
-        } 
+        File pluginFile = GeneralUtils.callMethod(plugin, "getFile");
+        if (pluginFile != null) {
+            try {
+                json.put("file", JSONUtils.fileToJSON(pluginFile, false));
+            } catch(Exception e) {}
+        }
 
         if (file == null) {
             json.put("name", plugin.getName());
@@ -79,10 +76,9 @@ public class BukkitUtils {
             json.put("website", file.getWebsite());
             json.put("version", file.getVersion());
             json.put("main", file.getMain());
-            
-            if (GeneralUtils.hasMethod(file.getClass(), "getAPIVersion")) {
-                json.put("targetAPI", file.getAPIVersion());
-            }
+
+            String apiVersion = GeneralUtils.callMethod(file, "getAPIVersion");
+            if (apiVersion != null) json.put("targetAPI", apiVersion);
             
             JSONArray authors = new JSONArray();
             for (String author: file.getAuthors()) {
@@ -137,9 +133,14 @@ public class BukkitUtils {
         json.put("autosave", world.isAutoSave());
         json.put("spawnLoc", getLocationJSON(world.getSpawnLocation()));
         json.put("maxHeight", world.getMaxHeight());
-        json.put("minHeight", world.getMinHeight());
+        json.put("minHeight", 0);
         json.put("environment", getEnvironmentString(world.getEnvironment()));
         json.put("pvp", world.getPVP());
+
+        try {
+            Method minHeight = GeneralUtils.getMethod(world.getClass(), "minHeight");
+            if (minHeight != null) json.put("minHeight", (int) minHeight.invoke(world));
+        } catch(Exception e) {}
 
         JSONObject spawnSettings = new JSONObject();
         spawnSettings.put("monsters", world.getAllowMonsters());
