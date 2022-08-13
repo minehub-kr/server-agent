@@ -23,7 +23,6 @@ public class BukkitUtils {
         json.put("ip", player.getAddress().toString());
         json.put("displayName", player.getDisplayName());
         json.put("gamemode", player.getGameMode().getValue());
-        json.put("locale", player.getLocale().toString());
         json.put("exp", getPlayerLevelJSON(player));
         json.put("location", getLocationJSON(player.getLocation()));
         json.put("health", player.getHealth());
@@ -31,6 +30,9 @@ public class BukkitUtils {
 
         Integer ping = ReflectionUtils.callMethod(player, "getPing");
         if (ping != null) json.put("ping", (int) ping);
+
+        String locale = ReflectionUtils.callMethod(player, "getLocale");
+        if (locale != null) json.put("locale", locale);
 
         return json;
     }

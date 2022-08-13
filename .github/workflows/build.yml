@@ -8,12 +8,14 @@ on:
     branches: [ main ]
     paths:
       - "src/**/*.java"
+      - "__legacy__/**/*.java"
       - "pom.xml"
       - ".github/workflows/*"
   pull_request:
     branches: [ main ]
     paths:
       - "src/**/*.java"
+      - "__legacy__/**/*.java"
       - "pom.xml"
       - ".github/workflows/*"
 

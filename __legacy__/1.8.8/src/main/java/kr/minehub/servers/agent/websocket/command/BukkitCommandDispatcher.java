@@ -1,7 +1,7 @@
 package kr.minehub.servers.agent.websocket.command;
 
 // WARNING!
-// THIS IS A PATCH FOR 1.8.
+// THIS IS A PATCH FOR 1.8.8.
 // 
 // Difference in this version:
 // 1.8: this is prior to spigot. remove symbol.
