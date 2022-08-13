@@ -2,6 +2,10 @@ package kr.minehub.servers.agent.websocket.command;
 
 // WARNING!
 // THIS IS A PATCH FOR 1.12.2.
+// 
+// Difference in this version:
+// Removed missing methods on superclass.
+//
 
 import java.util.Set;
 import java.util.UUID;
