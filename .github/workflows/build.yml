@@ -48,13 +48,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
-      - name: Cache
+      - name: Set up Cache for BuildTools
         uses: actions/cache@v3.0.7
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: ./BuildTools
           # An explicit key for restoring and saving the cache
-          key: server-agent-${{ matrix.java-version }}-${{ matrix.mc-version }}
+          key: server-agent-${{ matrix.java-version }}-mc${{ matrix.mc-version }}
       - name: Setup Spigot Build Environment for ${{ matrix.mc-version }}
         run: |
           test -d BuildTools || mkdir BuildTools
