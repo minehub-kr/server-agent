@@ -9,18 +9,31 @@ on:
 
 jobs:
   build:
+    name: Release ${{ matrix.mc-version }}
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.unsupported }}
 
     strategy:
       matrix:
+        java-version: [1.17]
         mc-version: [1.17.1, 1.18.2, 1.19.2]
+        unsupported: [false]
+
+        include:
+          - java-version: 1.8
+            mc-version: 1.12.2
+            unsupported: true
+
+          - java-version: 1.8
+            mc-version: 1.16.5
+            unsupported: true
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 1.17
+      - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v1
         with:
-          java-version: 1.17
+          java-version: ${{ matrix.java-version }}
       - name: Setup Spigot Build Environment for ${{ matrix.mc-version }}
         run: |
           mkdir BuildTools
@@ -41,9 +54,11 @@ jobs:
         run: |
           mkdir releases
           mv target/agent-${VER_TAG:1}.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar
+          test $UNSUPPORTED == "true" && mv releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}-unsupported.jar
         env:
           VER_TAG: ${{ github.event.release.tag_name }}
           MC_VERSION: ${{ matrix.mc-version }}
+          UNSUPPORTED: ${{ matrix.unsupported }}
       - name: Upload packages to release
         uses: svenstaro/upload-release-action@v2
         with:
