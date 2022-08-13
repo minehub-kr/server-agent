@@ -3,6 +3,7 @@ package kr.minehub.servers.agent;
 import kr.minehub.servers.agent.command.MinehubCommand;
 import kr.minehub.servers.agent.core.AgentCore;
 
+import kr.minehub.servers.agent.core.BukkitEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -55,6 +56,9 @@ public final class Main extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+
+        // Event Register
+        getServer().getPluginManager().registerEvents(new BukkitEvent(), this);
 
         core = new AgentCore(null);
         core.setCredentialsFile(credentialsFile);
