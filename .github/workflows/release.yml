@@ -58,7 +58,7 @@ jobs:
         run: |
           mkdir releases
           mv target/agent-${VER_TAG:1}.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar
-          test $UNSUPPORTED == "true" && mv releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}-unsupported.jar
+          test $UNSUPPORTED == "true" && mv releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}-unsupported.jar || exit 0
         env:
           VER_TAG: ${{ github.event.release.tag_name }}
           MC_VERSION: ${{ matrix.mc-version }}
