@@ -7,6 +7,15 @@ import java.util.List;
 
 public class ReflectionUtils {
   /* Welcome to Reflection HELL */
+  public static boolean hasClass(String className) {
+      try {
+          Class.forName(className);
+      } catch (ClassNotFoundException e) {
+          return false;
+      }
+
+      return true;
+  }
 
   public static boolean hasMethod(Class<?> clazz, String method, Class<?> ...args) {
     return getMethod(clazz, method) != null;
