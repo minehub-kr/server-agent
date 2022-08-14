@@ -4,6 +4,7 @@ import java.net.URL;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 import kr.minehub.servers.agent.Main;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -19,12 +20,18 @@ public class OOBELogin {
         return;
     }
 
-    sender.sendMessage(ChatColor.YELLOW + "아래의 텍스트를 클릭하여 Stella-IT Accounts 로 로그인하세요.");
-    TextComponent message = new TextComponent(ChatColor.AQUA + "[" + ChatColor.RESET + "Click Here" + ChatColor.AQUA + "]");
-    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("클릭하여 Stella-IT Accounts 로 로그인")));
-    message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString()));
+    if (sender instanceof ConsoleCommandSender) {
+      sender.sendMessage(ChatColor.YELLOW + "아래 링크를 열어 Stella-IT Accounts 로 로그인하세요.");
 
-    sender.spigot().sendMessage(message);
+      sender.sendMessage(ChatColor.AQUA + "" + ChatColor.UNDERLINE + url.toString());
+    } else {
+      sender.sendMessage(ChatColor.YELLOW + "아래 [로그인]을 클릭해 Stella-IT Accounts 로 로그인하세요.");
+      TextComponent message = new TextComponent(ChatColor.AQUA + "[" + ChatColor.RESET + "로그인" + ChatColor.AQUA + "]");
+      message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("클릭하여 Stella-IT Accounts 로 로그인")));
+      message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString()));
+  
+      sender.spigot().sendMessage(message);
+    }
   }
 
   public static void askUserToLogin(CommandSender sender) {
