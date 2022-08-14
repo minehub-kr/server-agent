@@ -69,6 +69,8 @@ public class BukkitUtils {
             } catch(Exception e) {}
         }
 
+        json.put("enabled", plugin.isEnabled());
+
         if (file == null) {
             json.put("name", plugin.getName());
         } else {
