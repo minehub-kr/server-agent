@@ -24,4 +24,9 @@ public class OOBELogin {
     sender.sendMessage(ChatColor.YELLOW + "아래의 링크를 클릭하여 Stella-IT Accounts 로 로그인하세요.");
     sender.sendMessage(ChatColor.AQUA + "" + ChatColor.UNDERLINE + url.toString());
   }
+
+  public static void askUserToLogin(CommandSender sender) {
+    sender.sendMessage(""+ChatColor.GREEN+"[Minehub] "+ChatColor.RESET+"Minehub ServerAgent가 로그인 되어있지 않습니다.");
+    sender.sendMessage(""+ChatColor.LIGHT_PURPLE + "/minehub "+ChatColor.AQUA+"login "+ChatColor.RESET+"명령어를 실행 해 로그인하세요.");
+  }
 }

@@ -26,5 +26,19 @@ public class OOBELogin {
 
     sender.spigot().sendMessage(message);
   }
-  
+
+  public static void askUserToLogin(CommandSender sender) {
+    sender.sendMessage(""+ChatColor.GREEN+"[Minehub] "+ChatColor.RESET+"Minehub ServerAgent가 로그인 되어있지 않습니다.");
+    
+    TextComponent message = new TextComponent();
+
+    TextComponent link = new TextComponent(ChatColor.LIGHT_PURPLE+"/minehub "+ChatColor.AQUA+"login");
+    link.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("클릭하여 Stella IT Accounts 로 로그인 하세요.")));
+    link.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minehub login"));
+
+    message.addExtra(link); 
+    message.addExtra(ChatColor.RESET + " 명령어를 실행하거나 클릭 해 로그인 하세요.");
+
+    sender.spigot().sendMessage(message);
+  }
 }
