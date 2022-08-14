@@ -14,9 +14,17 @@ public class BukkitEvent implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (player.isOp()) {
-            if (!Main.core.authorization.isAuthorized()) {
-                OOBELogin.requestUserLogin(player);
+            AgentCore core = Main.core;
+            if (core != null) {
+                if (!core.authorization.isAuthorized()) {
+                    OOBELogin.requestUserLogin(player);
+                } else {
+                    if (core.server == null || !core.server.isRegistered()) {
+                        OOBELogin.askUserToRegister(player);
+                    }
+                }
             }
+
         }
     }
 
