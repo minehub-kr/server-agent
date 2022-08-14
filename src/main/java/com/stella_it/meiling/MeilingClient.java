@@ -15,6 +15,7 @@ import java.util.Map;
 
 public class MeilingClient {
     public static String meilingEndpoint = "https://meiling.stella-api.dev";
+    public static String defaultRedirectUri = "https://dash.minehub.kr/servers/new";
 
     public String clientId;
     public String clientSecret = null;
@@ -53,7 +54,7 @@ public class MeilingClient {
 
     public URL createAuthorizationRequest(MeilingAuthorizationMethod method, String[] scopes) {
         // this makes user to copy authorization_code by hand.
-        return this.createAuthorizationRequest(method, "urn:ietf:wg:oauth:2.0:oob", scopes, false);
+        return this.createAuthorizationRequest(method, defaultRedirectUri, scopes, false);
     }
 
     public URL createAuthorizationRequest(MeilingAuthorizationMethod method, String redirectUri, String[] scopes) {

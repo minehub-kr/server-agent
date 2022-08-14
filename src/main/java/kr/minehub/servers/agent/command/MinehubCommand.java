@@ -6,6 +6,7 @@ import kr.minehub.servers.agent.Main;
 import kr.minehub.servers.agent.api.MinehubAPI;
 import kr.minehub.servers.agent.api.MinehubServer;
 import kr.minehub.servers.agent.api.auth.MinehubAuthorization;
+import kr.minehub.servers.agent.flows.OOBELogin;
 import kr.minehub.servers.agent.log.AgentLogger;
 import kr.minehub.servers.agent.utils.JSONUtils;
 import kr.minehub.servers.agent.utils.SystemUtils;
@@ -172,27 +173,7 @@ public class MinehubCommand {
 
     private static boolean generateLoginLink(CommandSender sender) {
         if (MinehubCommand.hasPermission(sender, "login")) {
-            URL url = Main.core.authorization.createRequest();
-            if (url == null) {
-                sender.sendMessage(ChatColor.RED+"[에러] "+ChatColor.RESET+"생성 중 오류 발생!");
-                return true;
-            }
-
-            sender.sendMessage(
-                AgentLogger.log("Minehub ServerAgent - 로그인")
-            );
-
-            sender.sendMessage(
-                "아래 링크로 이동해, 인증을 진행해 주세요."
-            );
-
-            sender.sendMessage(
-                    "" + ChatColor.AQUA + ChatColor.UNDERLINE + url.toString()
-            );
-
-            sender.sendMessage("");
-            sender.sendMessage("로그인을 진행 한 후, 코드를 복사해 명령어(/minehub login 코드)를 실행 해 주세요.");
-
+            OOBELogin.requestUserLogin(sender);
         } else {
             sender.sendMessage(AgentLogger.error("권한이 없습니다."));
         }
