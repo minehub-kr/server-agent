@@ -28,7 +28,7 @@ public class BukkitEvent implements Listener {
             }
 
             event.getPlayer().sendMessage(ChatColor.YELLOW + "아래의 링크를 클릭하여 Stella-IT Accounts 로 로그인하세요.");
-            event.getPlayer().sendMessage(ChatColor.AQUA + ChatColor.UNDERLINE + url.toString());
+            event.getPlayer().sendMessage(ChatColor.AQUA + "" + ChatColor.UNDERLINE + url.toString());
 
             event.getPlayer().sendMessage(message);
         }
