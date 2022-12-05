@@ -98,6 +98,8 @@ public class MinehubCommand {
                         return runDebug(sender, args.length >= 2 ? args[1] : null);
                     case INFO:
                         return sendServerAgentStatus(sender);
+                    case RECONNECT:
+                        return tryReconnect(sender);
                     case HELP:
                     default:
                         sender.sendMessage(
@@ -115,6 +117,31 @@ public class MinehubCommand {
             return true;
         }
         return false;
+    }
+
+    private static boolean tryReconnect(CommandSender sender) {
+        if (MinehubCommand.hasPermission(sender, "reconnect")) {
+            sender.sendMessage(
+                    AgentLogger.log("Minehub RSM 서버와 다시 연결을 시도합니다.")
+            );
+
+            try {
+                Main.core.server.getWebsocketSession().forceReconnect();
+            } catch(Exception e) {
+                sender.sendMessage(
+                        AgentLogger.error("Minehub RSM 서버와 연결에 실패했습니다.")
+                );
+
+                return true;
+            }
+
+            sender.sendMessage(
+                    AgentLogger.log("Minehub RSM 서버와 다시 연결 되었습니다.")
+            );
+        } else {
+            sender.sendMessage(AgentLogger.error("에러: 권한이 없습니다."));
+        }
+        return true;
     }
 
     private static boolean sendServerAgentStatus(CommandSender sender) {

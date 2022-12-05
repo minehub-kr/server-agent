@@ -91,6 +91,21 @@ public class ConnectSession {
         return !this.isConnected() && this.isConnecting;
     }
 
+    public void forceReconnect() throws IOException, InvalidRefreshTokenException, WebSocketException {
+        Bukkit.getLogger().info(AgentLogger.log("Minehub 서버에 강제로 연결을 다시 시작합니다."));
+        if (this.isConnecting) {
+            Bukkit.getLogger().warning(AgentLogger.warn("Minehub 연결이 연결된 상태로 인식되고 있습니다. 강제로 연결을 해제한 후 다시 연결을 시도합니다."));
+            try {
+                this.disconnect();
+            } catch(Exception e) {}
+
+            this.isConnecting = false;
+        }
+
+        this.connect();
+        Bukkit.getLogger().info(AgentLogger.log("Minehub 서버에 다시 연결되었습니다."));
+    }
+
     public void sendMessage(String content) {
         ws.sendText(content);
     }

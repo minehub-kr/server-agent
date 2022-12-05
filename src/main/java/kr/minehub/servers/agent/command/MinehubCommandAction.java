@@ -13,6 +13,7 @@ public enum MinehubCommandAction {
     RENAME("rename", "<name>", "Minehub ServerAgent에 등록된 이 서버의 이름을 변경합니다."),
     INFO("info", "", "ServerAgent의 현재 상태를 표시합니다."),
     DEBUG("debug", "<? command>", "ServerAgent를 디버깅 하기 위한 명령을 실행 합니다"),
+    RECONNECT("reconnect", "", "오류 등으로 인해 Minehub RSM 서버와 연결이 끊긴 경우, 강제로 다시 연결을 시도합니다"),
     TOKEN("token", "", "(Debug) oAuth2 인증용 토큰을 표시합니다.");
 
     String cmdline;
