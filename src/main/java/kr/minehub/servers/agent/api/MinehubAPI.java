@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MinehubAPI {
-    public static String baseURL = "https://api.minehub.kr";
+    public static String baseURL = "https://rsm.stella-api.dev";
 
     public static String getHostname() {
         try {
             URL url = new URL(baseURL);
             return url.getHost();
         } catch (MalformedURLException e) {
-            return "api.minehub.kr";
+            return "rsm.stella-api.dev";
         }
     }
 
