@@ -58,6 +58,9 @@ jobs:
           wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
           java -jar BuildTools.jar --rev ${{ matrix.mc-version }}
           cd ..
+      - name: Change target version to ${{ matrix.mc-version }}
+        run: |
+          ./.github/workflow-files/change-ver.sh ${{ matrix.mc-version }}
       - name: Build with shadowJar
         run: gradle shadowJar
       - name: Upload a Build Artifact
