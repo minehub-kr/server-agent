@@ -38,14 +38,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java-version }}
-          cache: 'maven'
-      - name: Setup Spigot Build Environment for ${{ matrix.mc-version }}
-        run: |
-          test -d BuildTools || mkdir BuildTools
-          cd BuildTools
-          wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-          java -jar BuildTools.jar --rev ${{ matrix.mc-version }}
-          cd ..
+          cache: 'gradle'
       - name: Change target version to ${{ matrix.mc-version }}
         run: |
           ./.github/workflow-files/change-ver.sh ${{ matrix.mc-version }}
@@ -53,12 +46,19 @@ jobs:
         run: mvn versions:set -DnewVersion=${VER_TAG:1}
         env:
           VER_TAG: ${{ github.event.release.tag_name }}
-      - name: Build with Maven
-        run: mvn package
+      - name: Setup Spigot Build Environment for ${{ matrix.mc-version }}
+        run: |
+          test -d BuildTools || mkdir BuildTools
+          cd BuildTools
+          wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+          java -jar BuildTools.jar --rev ${{ matrix.mc-version }}
+          cd ..
+      - name: Build with shadowJar
+        run: gradle shadowJar
       - name: Rename package
         run: |
           mkdir releases
-          mv target/agent-${VER_TAG:1}.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar
+          mv build/libs/agent-${VER_TAG:1}-all.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar
           test $UNSUPPORTED == "true" && mv releases/agent-${VER_TAG:1}-mc${MC_VERSION}.jar releases/agent-${VER_TAG:1}-mc${MC_VERSION}-unsupported.jar || exit 0
         env:
           VER_TAG: ${{ github.event.release.tag_name }}
