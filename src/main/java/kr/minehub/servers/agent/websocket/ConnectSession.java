@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.net.URI;
 
 public class ConnectSession {
-    WebSocket ws;
+    volatile WebSocket ws;
     WebSocketAdapter adapter = null;
 
-    boolean preventReconnect = false;
-    private boolean isConnecting = false;
+    volatile boolean preventReconnect = false;
+    private volatile boolean isConnecting = false;
 
     private MinehubServer server;
     public ConnectSession(MinehubServer server) {
@@ -29,20 +29,10 @@ public class ConnectSession {
         this.preventReconnect = preventReconnect;
     }
 
-    public WebSocket connect() throws IOException, InvalidRefreshTokenException, WebSocketException {
+    public synchronized WebSocket connect() throws IOException, InvalidRefreshTokenException, WebSocketException {
+        if (this.preventReconnect || this.isConnecting() || this.isConnected()) return null;
+        this.isConnecting = true;
         try {
-            if (this.isConnecting()) return null;
-            if (this.isConnected()) return null;
-
-            this.isConnecting = true;
-
-            // if prevent reconnect is activated, do not reconnect.
-            if (this.ws != null && !this.isConnected()) {
-                if (this.preventReconnect) {
-                    return null;
-                }
-            }
-
             Bukkit.getLogger().info(AgentLogger.log("Minehub 서버에 연결을 시작합니다."));
     
             WebSocket ws;
@@ -68,13 +58,13 @@ public class ConnectSession {
             ws.connect();
             this.ws = ws;
 
-            this.isConnecting = false;
             return this.ws;
         } catch(IOException | InvalidRefreshTokenException | WebSocketException e) {
-            this.isConnecting = false;
             this.ws = null;
             e.printStackTrace();
             throw e;
+        } finally {
+            this.isConnecting = false;
         }
     }
 
@@ -91,16 +81,12 @@ public class ConnectSession {
         return !this.isConnected() && this.isConnecting;
     }
 
-    public void forceReconnect() throws IOException, InvalidRefreshTokenException, WebSocketException {
+    public synchronized void forceReconnect() throws IOException, InvalidRefreshTokenException, WebSocketException {
         Bukkit.getLogger().info(AgentLogger.log("Minehub 서버에 강제로 연결을 다시 시작합니다."));
-        if (this.isConnecting) {
-            Bukkit.getLogger().warning(AgentLogger.warn("Minehub 연결이 연결된 상태로 인식되고 있습니다. 강제로 연결을 해제한 후 다시 연결을 시도합니다."));
-            try {
-                this.disconnect();
-            } catch(Exception e) {}
-
-            this.isConnecting = false;
-        }
+        this.disconnect();
+        this.ws = null;
+        this.isConnecting = false;
+        this.preventReconnect = false;
 
         this.connect();
         Bukkit.getLogger().info(AgentLogger.log("Minehub 서버에 다시 연결되었습니다."));

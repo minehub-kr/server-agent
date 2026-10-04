@@ -90,6 +90,7 @@ public class MinehubServer {
 
         this.isStartedUp = true;
 
+        session.setPreventReconnect(false);
         session.connect();
         wsWatchdog.start();
         logHandler.start();
