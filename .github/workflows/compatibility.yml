@@ -1,0 +1,108 @@
+name: Compatibility checks
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "src/**"
+      - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - "gradle.properties"
+      - "gradle/**"
+      - "gradlew"
+      - "docker-compose.compatibility.yml"
+      - "scripts/test-compatibility.sh"
+      - ".github/workflows/compatibility.yml"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "src/**"
+      - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - "gradle.properties"
+      - "gradle/**"
+      - "gradlew"
+      - "docker-compose.compatibility.yml"
+      - "scripts/test-compatibility.sh"
+      - ".github/workflows/compatibility.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Unit tests and compatibility plugins
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+      - name: Test and build plugins
+        run: bash ./gradlew --no-daemon test shadowJar compatibilityProbeJar
+      - name: Upload plugins
+        uses: actions/upload-artifact@v4
+        with:
+          name: compatibility-plugins
+          path: |
+            build/libs/agent-0.0.1-ALPHA-all.jar
+            build/libs/compatibility-probe.jar
+          if-no-files-found: error
+      - name: Upload unit test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: |
+            build/reports/tests/test/
+            build/test-results/test/
+
+  compatibility:
+    name: Paper ${{ matrix.mc-version }} (Java ${{ matrix.java-version }})
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: paper26
+            mc-version: "26.3"
+            java-version: "25"
+          - service: paper121
+            mc-version: "1.21.11"
+            java-version: "21"
+          - service: paper119
+            mc-version: "1.19.2"
+            java-version: "17"
+          - service: paper118
+            mc-version: "1.18.2"
+            java-version: "17"
+          - service: paper117
+            mc-version: "1.17.1"
+            java-version: "17"
+          - service: paper116
+            mc-version: "1.16.5"
+            java-version: "11"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: compatibility-plugins
+          path: build/libs
+      - name: Run compatibility probe
+        run: bash scripts/test-compatibility.sh "${{ matrix.service }}"
+      - name: Upload compatibility results and server logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compatibility-${{ matrix.mc-version }}
+          path: |
+            build/compatibility/fixed-${{ matrix.mc-version }}/plugins/MinehubCompatibilityProbe/results.json
+            build/compatibility/fixed-${{ matrix.mc-version }}/logs/
+            build/compatibility/${{ matrix.service }}.log
+          if-no-files-found: warn

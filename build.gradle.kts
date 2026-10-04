@@ -60,7 +60,7 @@ dependencies {
 }
 
 group = "kr.minehub.servers"
-version = "0.0.1-ALPHA"
+version = providers.gradleProperty("releaseVersion").getOrElse("0.0.1-ALPHA")
 description = "ServerAgent"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -91,14 +91,14 @@ tasks {
 
     val generatePluginYml by registering {
         inputs.file(pluginYamlFile)
+        inputs.property("version", project.version)
         outputs.dir(outputDir)
 
         doLast {
             val pluginYamlText = pluginYamlFile.readText()
             val updatedText = pluginYamlText.replace(Regex("\nversion:(.*)"), "\nversion: $version")
-            println("${outputDir.get()}\\plugin.yml")
             outputDir.get().asFile.mkdirs()
-            file("${outputDir.get()}\\plugin.yml").writeText(updatedText)
+            outputDir.get().file("plugin.yml").asFile.writeText(updatedText)
         }
     }
 

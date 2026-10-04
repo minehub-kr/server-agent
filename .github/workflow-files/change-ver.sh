@@ -1,19 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-test -f ./build.gradle.kts.bak && rm ./build.gradle.kts
-test -f ./build.gradle.kts.bak && mv ./build.gradle.kts.bak ./build.gradle.kts
+target_version=${1:?Usage: change-ver.sh <Minecraft version>}
+if [[ ! "$target_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Expected a Minecraft version such as 1.8.8 or 1.19.2." >&2
+  exit 1
+fi
 
-echo "Target version: $1"
-cp build.gradle.kts build.gradle.kts.bak
-version_name=$(find ~/.m2/repository/org/spigotmc/spigot-api -type d -maxdepth 1 -name "$1*" -print -quit 2> /dev/null)
-api_ver_name="${version_name/$HOME\/.m2\/repository\/org\/spigotmc\/spigot-api\//}"
-api_ver=$(echo "$api_ver_name" | cut -f1,2 -d'.')
+api_ver_name="$target_version-R0.1-SNAPSHOT"
+api_ver=${target_version%.*}
 
 echo "Target Spigot-API version: $api_ver_name, api-version: $api_ver"
-sed -i s/1.16.5-R0.1-SNAPSHOT/$api_ver_name/g ./build.gradle.kts
-sed -i s/1.16/$api_ver/g ./src/main/resources/plugin.yml
+sed -i.bak "s/1.16.5-R0.1-SNAPSHOT/$api_ver_name/g" ./build.gradle.kts
+sed -i.bak "s/^api-version: .*/api-version: $api_ver/" ./src/main/resources/plugin.yml
+rm ./build.gradle.kts.bak ./src/main/resources/plugin.yml.bak
 
 echo "Delta Patching source code to match with SDK changes on Spigot-API: $api_ver_name"
-./__legacy__/process.sh $1
+bash ./__legacy__/process.sh "$target_version"
 
 echo "Done."

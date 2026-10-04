@@ -1,68 +1,70 @@
-# This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: Nightly Builds
 
 on:
   push:
     branches: [ main ]
     paths:
-      - "src/**/*.java"
-      - "__legacy__/**/*.java"
+      - "src/**"
+      - "__legacy__/**"
       - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - "gradle.properties"
+      - "gradle/**"
+      - "gradlew"
+      - ".github/workflow-files/**"
       - ".github/workflows/*"
   pull_request:
     branches: [ main ]
     paths:
-      - "src/**/*.java"
-      - "__legacy__/**/*.java"
+      - "src/**"
+      - "__legacy__/**"
       - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - "gradle.properties"
+      - "gradle/**"
+      - "gradlew"
+      - ".github/workflow-files/**"
       - ".github/workflows/*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     name: Build ${{ matrix.mc-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     continue-on-error: ${{ matrix.unsupported }}
 
     strategy:
+      fail-fast: false
       matrix:
-        java-version: [17]
         mc-version: [1.17.1, 1.18.2, 1.19.2]
         unsupported: [false]
 
         include:
-          - java-version: 8
-            mc-version: 1.8
+          - mc-version: 1.8.8
             unsupported: true
 
-          - java-version: 8
-            mc-version: 1.12.2
+          - mc-version: 1.12.2
             unsupported: true
 
-          - java-version: 8
-            mc-version: 1.16.5
+          - mc-version: 1.16.5
             unsupported: true
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: ${{ matrix.java-version }}
+          java-version: "17"
           cache: 'gradle'
-      - name: Setup Spigot Build Environment for ${{ matrix.mc-version }}
-        run: |
-          test -d BuildTools || mkdir BuildTools
-          cd BuildTools
-          wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-          java -jar BuildTools.jar --rev ${{ matrix.mc-version }}
-          cd ..
       - name: Change target version to ${{ matrix.mc-version }}
         run: |
-          ./.github/workflow-files/change-ver.sh ${{ matrix.mc-version }}
+          bash .github/workflow-files/change-ver.sh "${{ matrix.mc-version }}"
       - name: Build with shadowJar
-        run: gradle shadowJar
+        run: bash ./gradlew --no-daemon shadowJar
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -70,3 +72,4 @@ jobs:
           name: Agent-${{ matrix.mc-version }}.jar
           # A file, directory or wildcard pattern that describes what to upload
           path: build/libs/*.jar
+          if-no-files-found: error
