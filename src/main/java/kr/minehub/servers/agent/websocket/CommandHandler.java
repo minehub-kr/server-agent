@@ -4,6 +4,7 @@ import kr.minehub.servers.agent.Main;
 import kr.minehub.servers.agent.utils.BukkitUtils;
 import kr.minehub.servers.agent.utils.JSONUtils;
 import kr.minehub.servers.agent.websocket.command.BukkitCommandDispatcher;
+import kr.minehub.servers.agent.websocket.command.CommandOutputCapture;
 import kr.minehub.servers.agent.websocket.shell.ShellRunner;
 
 import java.io.*;
@@ -22,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.simple.JSONArray;
@@ -138,11 +140,15 @@ public class CommandHandler {
 
     private static JSONObject executeBukkitCommand(String cmdline) {
         BukkitCommandDispatcher dispatcher = new BukkitCommandDispatcher();
-        Bukkit.dispatchCommand(dispatcher.getCommandSender(), cmdline);
+        CommandSender sender = dispatcher.getCommandSender();
+        try (CommandOutputCapture capture = sender == dispatcher ? new CommandOutputCapture() : null) {
+            Bukkit.dispatchCommand(sender, cmdline);
 
-        JSONObject response = new JSONObject();
-        response.put("output", dispatcher.getOutput());
-        return response;
+            JSONObject response = new JSONObject();
+            String output = dispatcher.getOutput();
+            response.put("output", capture == null ? output : capture.getOutput(output));
+            return response;
+        }
     }
 
     public static JSONObject runShellCommand(JSONObject payload) throws IOException, InterruptedException {

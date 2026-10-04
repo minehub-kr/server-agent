@@ -39,6 +39,11 @@ and log forwarding. It writes `results.json` under
 The other services use `fixed-<Minecraft version>` directories.
 These checks do not authenticate to Minehub or register a server.
 
+Command feedback uses Paper's sender API when available. Older servers fall back
+to console logs from the command's thread while the command executes, preferring
+direct sender feedback when present. Output logged later by asynchronous tasks
+continues through the existing server log stream.
+
 The existing 1.8.8 and 1.12.2 legacy source patches can also be compiled against
 their original Spigot APIs without modifying the checkout:
 

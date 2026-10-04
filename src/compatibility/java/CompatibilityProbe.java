@@ -2,12 +2,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import kr.minehub.servers.agent.Main;
 import kr.minehub.servers.agent.api.MinehubServer;
@@ -86,7 +86,7 @@ public class CompatibilityProbe extends JavaPlugin {
             });
         }
         check("log4j_forwarding", () -> {
-            AtomicInteger received = new AtomicInteger();
+            CountDownLatch received = new CountDownLatch(1);
             String marker = "MINEHUB_COMPATIBILITY_LOG_MARKER";
             ConnectSession capture = new ConnectSession(null) {
                 @Override
@@ -97,7 +97,7 @@ public class CompatibilityProbe extends JavaPlugin {
                 @Override
                 public void sendLog(JSONObject log) {
                     if (marker.equals(log.get("message"))) {
-                        received.incrementAndGet();
+                        received.countDown();
                     }
                 }
             };
@@ -106,8 +106,8 @@ public class CompatibilityProbe extends JavaPlugin {
                 attacher.registerWebsocket(capture);
                 attacher.start();
                 Bukkit.getLogger().info(marker);
-                require(received.get() > 0, "Log was not forwarded");
-                return "received=" + received.get();
+                require(received.await(2, TimeUnit.SECONDS), "Log was not forwarded");
+                return "Log received";
             } finally {
                 attacher.unregisterWebsocket();
                 attacher.stop();
@@ -151,6 +151,8 @@ public class CompatibilityProbe extends JavaPlugin {
                                         "Missing seed value in translated feedback");
                             } else if (command.equals("minecraft:list")) {
                                 require(output.contains("players online"), "Missing translated player list");
+                            } else if (command.contains("missing_timeline")) {
+                                require(output.contains("Incorrect argument"), "Missing command error feedback");
                             }
                             return response;
                         } catch (ExecutionException e) {
