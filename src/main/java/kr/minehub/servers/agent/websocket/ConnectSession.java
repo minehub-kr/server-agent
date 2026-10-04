@@ -57,6 +57,11 @@ public class ConnectSession {
     
             ws.connect();
             this.ws = ws;
+            if (this.preventReconnect) {
+                ws.disconnect();
+                this.ws = null;
+                return null;
+            }
 
             return this.ws;
         } catch(IOException | InvalidRefreshTokenException | WebSocketException e) {
