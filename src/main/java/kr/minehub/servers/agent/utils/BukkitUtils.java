@@ -2,12 +2,14 @@ package kr.minehub.servers.agent.utils;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -20,7 +22,8 @@ public class BukkitUtils {
         JSONObject json = new JSONObject();
         json.put("uuid", player.getUniqueId().toString());
         json.put("name", player.getName());
-        json.put("ip", player.getAddress().toString());
+        InetSocketAddress address = player.getAddress();
+        json.put("ip", address == null ? null : address.toString());
         json.put("displayName", player.getDisplayName());
         json.put("gamemode", player.getGameMode().getValue());
         json.put("exp", getPlayerLevelJSON(player));
@@ -131,7 +134,8 @@ public class BukkitUtils {
         json.put("name", world.getName());
         json.put("seaLevel", world.getSeaLevel());
         json.put("time", world.getTime());
-        json.put("worldType", world.getWorldType().getName());
+        WorldType worldType = world.getWorldType();
+        json.put("worldType", worldType == null ? null : worldType.getName());
         json.put("storm", world.hasStorm());
         json.put("thundering", world.isThundering());
         json.put("autosave", world.isAutoSave());
@@ -175,7 +179,8 @@ public class BukkitUtils {
 
     public static JSONObject getLocationJSON(Location loc) {
         JSONObject json = new JSONObject();
-        json.put("world", loc.getWorld().getName());
+        World world = loc.getWorld();
+        json.put("world", world == null ? null : world.getName());
 
         json.put("x", loc.getX());
         json.put("y", loc.getY());

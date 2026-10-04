@@ -1,6 +1,8 @@
 package kr.minehub.servers.agent.utils;
 
 import org.bukkit.Location;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.json.simple.JSONObject;
@@ -45,5 +47,32 @@ class BukkitUtilsTest {
         World world = prepareWorld(mock(World.class));
 
         assertEquals(0, BukkitUtils.getWorldJSON(world).get("minHeight"));
+    }
+
+    @Test
+    void serializesPlayerWithoutAddressOrLocationWorld() {
+        Player player = mock(Player.class);
+        when(player.getUniqueId()).thenReturn(java.util.UUID.randomUUID());
+        when(player.getGameMode()).thenReturn(GameMode.SURVIVAL);
+        when(player.getLocation()).thenReturn(new Location(null, 1, 2, 3));
+
+        JSONObject result = BukkitUtils.getPlayerJSON(player);
+
+        assertTrue(result.containsKey("ip"));
+        assertNull(result.get("ip"));
+        JSONObject location = (JSONObject) result.get("location");
+        assertNull(location.get("world"));
+        assertEquals(1.0, location.get("x"));
+    }
+
+    @Test
+    void serializesWorldWithoutLegacyWorldType() {
+        World world = prepareWorld(mock(World.class));
+        when(world.getWorldType()).thenReturn(null);
+
+        JSONObject result = BukkitUtils.getWorldJSON(world);
+
+        assertTrue(result.containsKey("worldType"));
+        assertNull(result.get("worldType"));
     }
 }
