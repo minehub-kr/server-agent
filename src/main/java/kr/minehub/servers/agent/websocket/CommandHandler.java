@@ -301,7 +301,14 @@ public class CommandHandler {
         if (path == null) throw new IOException("missing path field");
 
         String contents = (String) data.get("contents");
-        if (path == null) throw new IOException("missing path field");
+        if (contents == null) throw new IOException("missing contents field");
+
+        byte[] decoded;
+        try {
+            decoded = Base64.getDecoder().decode(contents);
+        } catch (IllegalArgumentException e) {
+            throw new IOException("invalid base64 contents", e);
+        }
 
         File target = new File(path);
         if (target.exists()) {
@@ -311,18 +318,9 @@ public class CommandHandler {
 
                 return json;
             }
-        } else {
-            File parentDirectory = new File(path.substring(0, FilenameUtils.indexOfLastSeparator(path)));
-            parentDirectory.mkdirs();
-            target.createNewFile();
         }
-
-        Base64.Decoder decoder = Base64.getDecoder();
-        byte[] decoded = decoder.decode(contents);
-
-        DataOutputStream os = new DataOutputStream(new FileOutputStream(target));
-        os.write(decoded);
-        os.close();
+        createParentDirectories(target);
+        Files.write(target.toPath(), decoded);
 
         JSONObject json = new JSONObject();
         json.put("success", true);
@@ -353,11 +351,10 @@ public class CommandHandler {
         } else {
             if (FilenameUtils.indexOfLastSeparator(path) == path.length() - 1) {
                 // this is directory
-                target.mkdirs();
+                Files.createDirectories(target.toPath());
                 return downloadFile(payload);
             } else {
-                File parentDirectory = new File(path.substring(0, FilenameUtils.indexOfLastSeparator(path)));
-                parentDirectory.mkdirs();
+                createParentDirectories(target);
             }
         }
 
@@ -367,5 +364,12 @@ public class CommandHandler {
         json.put("success", true);
 
         return json;
+    }
+
+    private static void createParentDirectories(File target) throws IOException {
+        java.nio.file.Path parent = target.toPath().toAbsolutePath().getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
     }
 }
