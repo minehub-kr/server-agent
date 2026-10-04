@@ -42,10 +42,19 @@ public class CommandHandler {
         String actionStr;
 
         if (!payload.containsKey("action")) return response;
+        if (!(payload.get("action") instanceof String)) {
+            response.put("error", "invalid_action");
+            return response;
+        }
         actionStr = (String) payload.get("action");
 
         Commands action = Commands.getActionByName(actionStr);
         response.put("action", actionStr);
+
+        if (action == null) {
+            response.put("error", "invalid_action");
+            return response;
+        }
 
         switch(action) {
             case PING:
