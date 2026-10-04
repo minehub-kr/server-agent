@@ -142,9 +142,13 @@ public class BukkitUtils {
         json.put("pvp", world.getPVP());
 
         try {
-            Method minHeight = ReflectionUtils.getMethod(world.getClass(), "minHeight");
-            if (minHeight != null) json.put("minHeight", (int) minHeight.invoke(world));
-        } catch(Exception e) {}
+            Method minHeight = world.getClass().getMethod("getMinHeight");
+            json.put("minHeight", (int) minHeight.invoke(world));
+        } catch (NoSuchMethodException e) {
+            // Minecraft versions before 1.17 do not expose a minimum height.
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Failed to read world minimum height", e);
+        }
 
         JSONObject spawnSettings = new JSONObject();
         spawnSettings.put("monsters", world.getAllowMonsters());
