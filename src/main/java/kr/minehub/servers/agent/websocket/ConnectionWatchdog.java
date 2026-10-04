@@ -16,55 +16,48 @@ public class ConnectionWatchdog {
 
     public void start() {
         if (this.scheduleId < 0) {
-            this.scheduleId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+            this.scheduleId = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
                     Main.plugin,
-                    () -> {
-                        this.runJob();
-                    },0,20 * syncInterval
+                    this::runJob,
+                    0L,
+                    20L * syncInterval
             );
         }
     }
 
     public void stop() {
-        if (this.scheduleId > 0) {
-            Main.plugin.getServer().getScheduler().cancelTask(this.scheduleId);
+        if (this.scheduleId >= 0) {
+            Bukkit.getScheduler().cancelTask(this.scheduleId);
             this.scheduleId = -1;
         }
     }
 
     public void runJob() {
-        // add jobs here
+        if (server == null) return;
+        ConnectSession session = server.getWebsocketSession();
+        if (session == null || session.preventReconnect || session.isConnected()) return;
 
-        new Thread(() -> {    
-            if (server != null) {
-                ConnectSession session = server.getWebsocketSession();
+        if (session.isConnecting()) {
+            Bukkit.getLogger().warning(AgentLogger.warn(
+                    "WebsocketWatchdog: Minehub과의 연결이 아직 진행 중입니다. 계속 연결이 되지 않는다면 서버를 재시작하세요."
+            ));
+            return;
+        }
 
-                if (session != null) {
-                    if (!session.isConnected() && !session.isConnecting()) {
-                        try {
-                            Bukkit.getLogger().warning(AgentLogger.warn(
-                                "WebsocketWatchdog: Minehub과 웹소켓 세션이 연결되어있지 않습니다. 연결을 재시도 합니다."
-                            ));
-                            session.connect();
-                            Bukkit.getLogger().info(AgentLogger.log(
-                                "WebsocketWatchdog: Minehub과 웹소켓 세션이 복구되었습니다."
-                            ));
-                        } catch (Exception e) {
-                            Bukkit.getLogger().severe(AgentLogger.error(
-                                "WebsocketWatchdog: Minehub과의 웹소켓 세션 복구 중 예외가 발생했습니다. 아래 표기되는 Stacktrace를 참조해 주세요."
-                            ));
-
-                            e.printStackTrace();
-                        }
-                    } else if (!session.isConnected() && session.isConnecting()) {
-                        Bukkit.getLogger().warning(AgentLogger.warn(
-                                "WebsocketWatchdog: Minehub과의 연결이 아직 진행 중입니다. 계속 연결이 되지 않는다면 서버를 재시작하세요."
-                        ));
-                    }
-                }
+        try {
+            Bukkit.getLogger().warning(AgentLogger.warn(
+                    "WebsocketWatchdog: Minehub과 웹소켓 세션이 연결되어있지 않습니다. 연결을 재시도 합니다."
+            ));
+            if (session.connect() != null) {
+                Bukkit.getLogger().info(AgentLogger.log(
+                        "WebsocketWatchdog: Minehub과 웹소켓 세션이 복구되었습니다."
+                ));
             }
-        }).run();
+        } catch (Exception e) {
+            Bukkit.getLogger().severe(AgentLogger.error(
+                    "WebsocketWatchdog: Minehub과의 웹소켓 세션 복구 중 예외가 발생했습니다. 아래 표기되는 Stacktrace를 참조해 주세요."
+            ));
+            e.printStackTrace();
+        }
     }
-
-
 }
