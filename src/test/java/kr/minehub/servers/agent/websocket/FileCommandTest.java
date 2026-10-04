@@ -1,6 +1,7 @@
 package kr.minehub.servers.agent.websocket;
 
 import java.io.IOException;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class FileCommandTest {
     @TempDir
@@ -91,5 +93,12 @@ class FileCommandTest {
         Path destination = Files.write(directory.resolve("existing.txt"), new byte[] { 7 });
         assertThrows(IOException.class, () -> CommandHandler.uploadFile(request("path", destination.toString())));
         assertArrayEquals(new byte[] { 7 }, Files.readAllBytes(destination));
+    }
+
+    @Test
+    void reportsDeleteFailureInsteadOfSuccess() {
+        File file = mock(File.class);
+        when(file.delete()).thenReturn(false);
+        assertThrows(IOException.class, () -> CommandHandler.deleteFile(file));
     }
 }

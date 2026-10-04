@@ -255,16 +255,20 @@ public class CommandHandler {
             return json;
         }
 
-        if (file.isDirectory()) {
-            FileUtils.deleteDirectory(file);
-        } else {
-            file.delete();
-        }
+        deleteFile(file);
 
         JSONObject json = new JSONObject();
         json.put("success", true);
 
         return json;
+    }
+
+    static void deleteFile(File file) throws IOException {
+        if (file.isDirectory()) {
+            FileUtils.deleteDirectory(file);
+        } else if (!file.delete()) {
+            throw new IOException("Failed to delete file: " + file);
+        }
     }
 
     public static JSONObject moveLocalFile(JSONObject payload) throws IOException {
