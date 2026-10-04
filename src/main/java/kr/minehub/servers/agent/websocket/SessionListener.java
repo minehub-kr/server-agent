@@ -57,7 +57,7 @@ public class SessionListener extends WebSocketAdapter {
                 JSONObject payload = new JSONObject();
                 payload.put("error", "java_exception");
 
-                if (action == null) payload.put("action", action);
+                if (action != null) payload.put("action", action);
 
                 JSONObject exception = JSONUtils.createExceptionJSON(e);
                 payload.put("exception", exception);

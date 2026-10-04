@@ -14,7 +14,10 @@ import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -100,7 +103,11 @@ public class CommandHandler {
     }
 
     public static JSONObject runBukkitCommand(JSONObject payload) throws IOException, InterruptedException {
-        JSONObject response = new JSONObject();
+        return runBukkitCommand(payload, 30, TimeUnit.SECONDS);
+    }
+
+    static JSONObject runBukkitCommand(JSONObject payload, long timeout, TimeUnit unit)
+            throws IOException, InterruptedException {
 
         JSONObject data = (JSONObject) payload.get("data");
         if (data == null) throw new IOException("missing data field");
@@ -108,23 +115,33 @@ public class CommandHandler {
         String cmdline = (String) data.get("cmdline");
         if (cmdline == null) throw new IOException("missing cmdline");
 
-        BukkitCommandDispatcher dispatcher = new BukkitCommandDispatcher();
-
-        // doing in spinlock way. :facepalm:
-        AtomicBoolean isCompleted = new AtomicBoolean(false);
-
-        // All bukkit related stuff should be run synchronously.
-        BukkitTask task = Bukkit.getScheduler().runTask(Main.plugin, () -> {
-            Bukkit.dispatchCommand(dispatcher, cmdline);
-            response.put("output", dispatcher.getOutput());
-            isCompleted.set(true);
-        });
-
-        while (!isCompleted.get()) {
-            // This would be ok right?
-            Thread.sleep(100);
+        if (Bukkit.isPrimaryThread()) {
+            return executeBukkitCommand(cmdline);
         }
 
+        FutureTask<JSONObject> command = new FutureTask<>(() -> executeBukkitCommand(cmdline));
+        BukkitTask task = Bukkit.getScheduler().runTask(Main.plugin, command);
+        try {
+            return command.get(timeout, unit);
+        } catch (ExecutionException e) {
+            throw new IOException("Failed to execute Minecraft command: " + cmdline, e.getCause());
+        } catch (TimeoutException e) {
+            command.cancel(false);
+            task.cancel();
+            throw new IOException("Minecraft command timed out: " + cmdline, e);
+        } catch (InterruptedException e) {
+            command.cancel(false);
+            task.cancel();
+            throw e;
+        }
+    }
+
+    private static JSONObject executeBukkitCommand(String cmdline) {
+        BukkitCommandDispatcher dispatcher = new BukkitCommandDispatcher();
+        Bukkit.dispatchCommand(dispatcher, cmdline);
+
+        JSONObject response = new JSONObject();
+        response.put("output", dispatcher.getOutput());
         return response;
     }
 

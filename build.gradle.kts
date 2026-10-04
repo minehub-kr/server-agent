@@ -48,6 +48,10 @@ dependencies {
 
     // For Intercepting Log4J
     compileOnly("org.apache.logging.log4j:log4j-core:2.17.2")
+
+    testImplementation("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
+    testImplementation("org.mockito:mockito-inline:4.11.0")
 }
 
 group = "kr.minehub.servers"
@@ -57,6 +61,10 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks {

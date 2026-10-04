@@ -22,7 +22,7 @@ public class JSONUtils {
         JSONObject exception = new JSONObject();
         exception.put("message", e.getMessage());
         exception.put("localizedMessage", e.getLocalizedMessage());
-        exception.put("cause", e.getCause());
+        exception.put("cause", e.getCause() != null ? e.getCause().toString() : null);
 
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
