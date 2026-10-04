@@ -1,0 +1,55 @@
+x-server: &server
+  environment: &environment
+    EULA: "TRUE"
+    TYPE: PAPER
+    MEMORY: 1536M
+    ONLINE_MODE: "FALSE"
+    VIEW_DISTANCE: "2"
+    SIMULATION_DISTANCE: "2"
+    GENERATE_STRUCTURES: "FALSE"
+    LEVEL_TYPE: minecraft:flat
+    SPAWN_PROTECTION: "0"
+    ENABLE_RCON: "TRUE"
+    RCON_PASSWORD: compatibility-local-only
+    SKIP_DOWNLOAD_DEFAULTS: "TRUE"
+
+services:
+  paper26:
+    <<: *server
+    image: itzg/minecraft-server@sha256:951c21928ffcca5b5b6efc996c994d43e292f7bd86345b2cc28535a1e3a3efb7
+    environment:
+      <<: *environment
+      VERSION: "26.3"
+      PAPER_BUILD: "148"
+      PAPER_DOWNLOAD_URL: https://fill-data.papermc.io/v1/objects/baf4b8aa66deef8ef52ea0a9d83df555c84b332d9684385e728a8da77e4d848e/paper-26.3-148.jar
+    volumes:
+      - ./build/compatibility/fixed-26.3:/data
+      - ./build/libs/agent-0.0.1-ALPHA-all.jar:/plugins/agent.jar:ro
+      - ./build/libs/compatibility-probe.jar:/plugins/compatibility-probe.jar:ro
+
+  paper121:
+    <<: *server
+    image: itzg/minecraft-server@sha256:c0702586c3a76938983cec6ffe4b585ae68edfc1c119ccf512dcb53e37e842e8
+    environment:
+      <<: *environment
+      VERSION: "1.21.11"
+      PAPER_BUILD: "132"
+      PAPER_DOWNLOAD_URL: https://fill-data.papermc.io/v1/objects/5ffef465eeeb5f2a3c23a24419d97c51afd7dbb4923ff42df9a3f58bba1ccfba/paper-1.21.11-132.jar
+    volumes:
+      - ./build/compatibility/fixed-1.21.11:/data
+      - ./build/libs/agent-0.0.1-ALPHA-all.jar:/plugins/agent.jar:ro
+      - ./build/libs/compatibility-probe.jar:/plugins/compatibility-probe.jar:ro
+
+  paper119:
+    <<: *server
+    image: itzg/minecraft-server@sha256:6b329bcfd70bbece12c234ee3b704914def2cda279307cf46757af249b8b15e8
+    environment:
+      <<: *environment
+      VERSION: "1.19.2"
+      PAPER_BUILD: "307"
+      PAPER_DOWNLOAD_URL: https://fill-data.papermc.io/v1/objects/2eb5c7459ec94bcdc597ed711d549a3ab4b0fda13e412a0792a1a069b5903864/paper-1.19.2-307.jar
+      LEVEL_TYPE: flat
+    volumes:
+      - ./build/compatibility/fixed-1.19.2:/data
+      - ./build/libs/agent-0.0.1-ALPHA-all.jar:/plugins/agent.jar:ro
+      - ./build/libs/compatibility-probe.jar:/plugins/compatibility-probe.jar:ro

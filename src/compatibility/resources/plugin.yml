@@ -1,0 +1,8 @@
+name: MinehubCompatibilityProbe
+version: 1.0
+main: CompatibilityProbe
+api-version: '1.16'
+depend: [Minehub-ServerAgent]
+commands:
+  compatprobe:
+    description: Run the local compatibility checks

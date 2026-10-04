@@ -67,6 +67,19 @@ tasks.test {
     useJUnitPlatform()
 }
 
+val compatibility by sourceSets.creating {
+    compileClasspath += sourceSets.main.get().output
+}
+
+configurations[compatibility.implementationConfigurationName].extendsFrom(configurations.implementation.get())
+configurations[compatibility.compileOnlyConfigurationName].extendsFrom(configurations.compileOnly.get())
+
+tasks.register<Jar>("compatibilityProbeJar") {
+    dependsOn(tasks.named(compatibility.classesTaskName))
+    archiveFileName.set("compatibility-probe.jar")
+    from(compatibility.output)
+}
+
 tasks {
     val pluginYamlFile = file("src/main/resources/plugin.yml")
     val outputDir = layout.buildDirectory.dir("resources/main")

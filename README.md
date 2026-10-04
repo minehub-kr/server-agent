@@ -12,5 +12,31 @@ This plugin is for integrating your server to [Minehub dashboard](https://dash.m
 ## Target System
 Minehub Agent targets Java 17 by default.  
 
+## Compatibility checks
+Run the unit tests and build the runtime test plugin in Docker:
+
+```sh
+docker run --rm \
+  -e GRADLE_USER_HOME=/workspace/build/compatibility/gradle-cache \
+  -v "$PWD":/workspace -w /workspace eclipse-temurin:17-jdk \
+  bash ./gradlew --no-daemon test shadowJar compatibilityProbeJar
+```
+
+The test servers use separate worlds and do not publish host ports. The Compose
+configuration accepts the Minecraft EULA for these local test servers. Run one
+service at a time: `paper26` (Java 25), `paper121` (Java 21), or `paper119` (Java 17).
+
+```sh
+docker compose -f docker-compose.compatibility.yml up -d paper26
+docker compose -f docker-compose.compatibility.yml logs -f paper26
+docker compose -f docker-compose.compatibility.yml down
+```
+
+The probe checks command output, invalid-command handling, world heights, metadata,
+and log forwarding. It writes `results.json` under
+`build/compatibility/fixed-26.3/plugins/MinehubCompatibilityProbe/` for `paper26`.
+The other services use `fixed-1.21.11` and `fixed-1.19.2`, respectively.
+These checks do not authenticate to Minehub or register a server.
+
 ## License
 Distributed under [MIT License](LICENSE)

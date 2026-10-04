@@ -138,7 +138,7 @@ public class CommandHandler {
 
     private static JSONObject executeBukkitCommand(String cmdline) {
         BukkitCommandDispatcher dispatcher = new BukkitCommandDispatcher();
-        Bukkit.dispatchCommand(dispatcher, cmdline);
+        Bukkit.dispatchCommand(dispatcher.getCommandSender(), cmdline);
 
         JSONObject response = new JSONObject();
         response.put("output", dispatcher.getOutput());
