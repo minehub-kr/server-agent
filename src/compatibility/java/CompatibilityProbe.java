@@ -127,6 +127,19 @@ public class CompatibilityProbe extends JavaPlugin {
                 return thread;
             });
             try {
+                for (String action : new String[] { "get_players", "get_bukkit_info" }) {
+                    check("remote:" + action, () -> {
+                        Future<JSONObject> future = executor.submit(() ->
+                                handler.processWebsocket(payload(action, null)));
+                        try {
+                            JSONObject response = future.get(5, TimeUnit.SECONDS);
+                            require(response.get("data") != null, "Missing Bukkit query data");
+                            return response;
+                        } finally {
+                            future.cancel(true);
+                        }
+                    });
+                }
                 for (String command : new String[] {
                         "minehub help", "bukkit:version", "minecraft:list",
                         "minecraft:seed", "minecraft:time query minehub:missing_timeline",

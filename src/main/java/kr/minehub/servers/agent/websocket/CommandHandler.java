@@ -16,8 +16,10 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Iterator;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -67,10 +69,10 @@ public class CommandHandler {
                 response.put("data", runShellCommand(payload));
                 break;
             case GET_PLAYERS:
-                response.put("data", getOnlinePlayers());
+                response.put("data", readBukkitState(CommandHandler::getOnlinePlayers));
                 break;
             case GET_BUKKIT_INFO:
-                response.put("data", BukkitUtils.getBukkitInfoJSON());
+                response.put("data", readBukkitState(BukkitUtils::getBukkitInfoJSON));
                 break;
             case GET_BUKKIT_VERSION:
                 response.put("data", Bukkit.getBukkitVersion());
@@ -112,6 +114,20 @@ public class CommandHandler {
         }
 
         return response;
+    }
+
+    private static <T> T readBukkitState(Callable<T> query) throws Exception {
+        if (Bukkit.isPrimaryThread()) return query.call();
+
+        Future<T> result = Bukkit.getScheduler().callSyncMethod(Main.plugin, query);
+        try {
+            return result.get(30, TimeUnit.SECONDS);
+        } catch (ExecutionException e) {
+            throw new IOException("Failed to read Bukkit state", e.getCause());
+        } catch (TimeoutException | InterruptedException e) {
+            result.cancel(false);
+            throw e;
+        }
     }
 
     public static JSONObject runBukkitCommand(JSONObject payload) throws IOException, InterruptedException {
