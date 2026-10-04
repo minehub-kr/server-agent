@@ -203,15 +203,12 @@ public class CommandHandler {
         String mainMethod = (String) data.get("mainMethod");
         if (mainMethod == null) mainMethod = "main";
 
-        URLClassLoader classLoader = new URLClassLoader(new URL[] { url }, Main.class.getClassLoader() );
-        Class loadTarget = Class.forName(mainClass, true, classLoader);
+        try (URLClassLoader classLoader = new URLClassLoader(new URL[] { url }, Main.class.getClassLoader())) {
+            Class<?> loadTarget = Class.forName(mainClass, true, classLoader);
+            Method method = loadTarget.getMethod(mainMethod, String[].class);
+            Object object = method.invoke(null, (Object) new String[] { "" });
 
-        Method method = loadTarget.getMethod(mainMethod, String[].class);
-        Object object = method.invoke(null, new String[] { "" });
-
-        json.put("success", true);
-
-        if (object != null) {
+            json.put("success", true);
             if (object instanceof JSONObject) {
                 json.put("output", (JSONObject) object);
             }
