@@ -24,7 +24,8 @@ docker run --rm \
 
 The test servers use separate worlds and do not publish host ports. The Compose
 configuration accepts the Minecraft EULA for these local test servers. Run one
-service at a time: `paper26` (Java 25), `paper121` (Java 21), or `paper119` (Java 17).
+service at a time: `paper26` (Java 25), `paper121` (Java 21), `paper119`, `paper118`,
+`paper117` (Java 17), or `paper116` (Java 11).
 
 ```sh
 docker compose -f docker-compose.compatibility.yml up -d paper26
@@ -35,8 +36,18 @@ docker compose -f docker-compose.compatibility.yml down
 The probe checks command output, invalid-command handling, world heights, metadata,
 and log forwarding. It writes `results.json` under
 `build/compatibility/fixed-26.3/plugins/MinehubCompatibilityProbe/` for `paper26`.
-The other services use `fixed-1.21.11` and `fixed-1.19.2`, respectively.
+The other services use `fixed-<Minecraft version>` directories.
 These checks do not authenticate to Minehub or register a server.
+
+The existing 1.8.8 and 1.12.2 legacy source patches can also be compiled against
+their original Spigot APIs without modifying the checkout:
+
+```sh
+bash scripts/test-legacy-builds.sh
+```
+
+This verifies legacy compilation; it does not certify runtime support for those
+versions. Their existing CI entries are marked as unsupported.
 
 ## License
 Distributed under [MIT License](LICENSE)

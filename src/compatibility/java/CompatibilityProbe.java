@@ -74,7 +74,12 @@ public class CompatibilityProbe extends JavaPlugin {
         for (World world : Bukkit.getWorlds()) {
             check("world_min_height:" + world.getName(), () -> {
                 JSONObject data = BukkitUtils.getWorldJSON(world);
-                int actual = (Integer) world.getClass().getMethod("getMinHeight").invoke(world);
+                int actual = 0;
+                try {
+                    actual = (Integer) world.getClass().getMethod("getMinHeight").invoke(world);
+                } catch (NoSuchMethodException e) {
+                    // Older Minecraft worlds start at zero and expose no getMinHeight API.
+                }
                 require(((Number) data.get("minHeight")).intValue() == actual,
                         "reported=" + data.get("minHeight") + ", actual=" + actual);
                 return data;

@@ -53,3 +53,45 @@ services:
       - ./build/compatibility/fixed-1.19.2:/data
       - ./build/libs/agent-0.0.1-ALPHA-all.jar:/plugins/agent.jar:ro
       - ./build/libs/compatibility-probe.jar:/plugins/compatibility-probe.jar:ro
+
+  paper118:
+    <<: *server
+    image: itzg/minecraft-server@sha256:6b329bcfd70bbece12c234ee3b704914def2cda279307cf46757af249b8b15e8
+    environment:
+      <<: *environment
+      VERSION: "1.18.2"
+      TYPE: CUSTOM
+      CUSTOM_SERVER: https://fill-data.papermc.io/v1/objects/0578f18f4d632b494b468ec56b3b414b5b56fea087ee7d39cf6dcdf4c9d01f05/paper-1.18.2-388.jar
+      LEVEL_TYPE: flat
+    volumes:
+      - ./build/compatibility/fixed-1.18.2:/data
+      - ./build/libs/agent-0.0.1-ALPHA-all.jar:/plugins/agent.jar:ro
+      - ./build/libs/compatibility-probe.jar:/plugins/compatibility-probe.jar:ro
+
+  paper117:
+    <<: *server
+    image: itzg/minecraft-server@sha256:6b329bcfd70bbece12c234ee3b704914def2cda279307cf46757af249b8b15e8
+    environment:
+      <<: *environment
+      VERSION: "1.17.1"
+      TYPE: CUSTOM
+      CUSTOM_SERVER: https://fill-data.papermc.io/v1/objects/6cc1ee2f94253ce10b5374ed85fffc735a97d8f1b64db293683dfa24dd3cc05f/paper-1.17.1-411.jar
+      LEVEL_TYPE: flat
+    volumes:
+      - ./build/compatibility/fixed-1.17.1:/data
+      - ./build/libs/agent-0.0.1-ALPHA-all.jar:/plugins/agent.jar:ro
+      - ./build/libs/compatibility-probe.jar:/plugins/compatibility-probe.jar:ro
+
+  paper116:
+    <<: *server
+    image: itzg/minecraft-server@sha256:cc7c11106ced292c7d264261dbb76c5c9f09b3cc14a6082b4b0a8711e7fac199
+    environment:
+      <<: *environment
+      VERSION: "1.16.5"
+      TYPE: CUSTOM
+      CUSTOM_SERVER: https://fill-data.papermc.io/v1/objects/e67da4851d08cde378ab2b89be58849238c303351ed2482181a99c2c2b489276/paper-1.16.5-794.jar
+      LEVEL_TYPE: flat
+    volumes:
+      - ./build/compatibility/fixed-1.16.5:/data
+      - ./build/libs/agent-0.0.1-ALPHA-all.jar:/plugins/agent.jar:ro
+      - ./build/libs/compatibility-probe.jar:/plugins/compatibility-probe.jar:ro

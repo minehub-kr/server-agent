@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -30,6 +31,10 @@ public class BukkitCommandDispatcher implements ConsoleCommandSender {
 
     public String getOutput() {
         return messageBuffer;
+    }
+
+    public CommandSender getCommandSender() {
+        return this;
     }
 
     @Override
