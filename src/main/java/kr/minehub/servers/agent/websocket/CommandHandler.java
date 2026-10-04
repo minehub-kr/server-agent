@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
@@ -284,12 +285,7 @@ public class CommandHandler {
             return json;
         }
 
-        File target = new File(to);
-        if (file.exists()) {
-            file.delete();
-        }
-
-        file.renameTo(target);
+        Files.move(file.toPath(), Paths.get(to));
 
         JSONObject json = new JSONObject();
         json.put("success", true);
