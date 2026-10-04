@@ -218,6 +218,9 @@ public class JSONUtils {
                 if (withContents) {
                     JSONArray contents = new JSONArray();
                     File[] subFiles = file.listFiles();
+                    if (subFiles == null) {
+                        throw new IOException("Failed to list directory: " + file.getAbsolutePath());
+                    }
                     for (File subFile : subFiles) {
                         JSONObject fileJson = fileToJSON(subFile, false);
                         if (fileJson != null) {
